@@ -6,6 +6,27 @@ Pour le premier livrable, nous allons livrer les parties suivantes du développe
     3. Maquettes des différentes pages Web et mobiles
     4. API pour les micro-services suivants: compte utilisateur, publications et communautés
 
+- [Livrable 1](#livrable-1)
+  - [Utilisation et configuration de Docker](#utilisation-et-configuration-de-docker)
+  - [Diagramme de classes](#diagramme-de-classes)
+  - [Maquettes des pages Web et mobiles](#maquettes-des-pages-web-et-mobiles)
+    - [Pages Web](#pages-web)
+      - [Page Connexion](#page-connexion)
+      - [Page Inscription](#page-inscription)
+      - [Page Accueil](#page-accueil)
+      - [Page Création de publication](#page-création-de-publication)
+      - [Page Création de communauté](#page-création-de-communauté)
+    - [Pages mobiles](#pages-mobiles)
+      - [Page Connexion](#page-connexion-1)
+      - [Page Inscription](#page-inscription-1)
+      - [Page Accueil](#page-accueil-1)
+      - [Page Création de publication](#page-création-de-publication-1)
+      - [Page Création de communauté](#page-création-de-communauté-1)
+  - [API des micro-services](#api-des-micro-services)
+    - [Compte utilisation](#compte-utilisation)
+    - [Publication](#publication)
+    - [Communauté](#communauté)
+
 ## Utilisation et configuration de Docker
 Nous avons déployé postgres en container. Ainsi, la base de données peut facilement être utilisé sur une nouvelle machine. Cela permet aussi la conservation des données. Il suffit d'avoir Docker Desktop d'installer sur son poste de travail pour pouvoir utiliser la base de données. Responsable: Christopher
 
