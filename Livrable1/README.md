@@ -8,6 +8,7 @@ Pour le premier livrable, nous allons livrer les parties suivantes du développe
 
 - [Livrable 1](#livrable-1)
   - [Utilisation et configuration de Docker](#utilisation-et-configuration-de-docker)
+    - [Screenshot du deploiement de pgAdmin et postgresql en docker](#screenshot-du-deploiement-de-pgadmin-et-postgresql-en-docker)
   - [Diagramme de classes](#diagramme-de-classes)
   - [Maquettes des pages Web et mobiles](#maquettes-des-pages-web-et-mobiles)
     - [Pages Web](#pages-web)
@@ -28,7 +29,7 @@ Pour le premier livrable, nous allons livrer les parties suivantes du développe
     - [Communauté](#communauté)
 
 ## Utilisation et configuration de Docker
-Nous avons déployé postgres en container. Ainsi, la base de données peut facilement être utilisé sur une nouvelle machine. Le deploiement se fait rapidement et sans installation. Les donnees ne sont pas persistentes entre les machines, mais la possibilite de lutiliser avec les services quon a developper reste toujours! Il suffit d'avoir Docker Desktop d'installer sur son poste de travail pour pouvoir utiliser la base de données. Responsable: Christopher
+Nous avons déployé postgres en container. Ainsi, la base de données peut facilement être utilisé sur une nouvelle machine. Le deploiement se fait rapidement et sans installation. Les donnees ne sont pas persistentes entre les machines, mais la possibilite de l'utiliser avec les services qu'on a developpé reste toujours! Il suffit d'avoir Docker Desktop d'installer sur son poste de travail pour pouvoir utiliser la base de données. Responsable: Christopher
 
 ### Screenshot du deploiement de pgAdmin et postgresql en docker
 ![PgAdminWebRunning](./images/pgAdmin%20in%20docker.png)
@@ -361,7 +362,19 @@ public class PostController {
         }
     }
 
-
+    @GetMapping("/view/{id}")
+    public ResponseEntity<List<Post>> getPostbyUserId(@PathVariable ("id") long id) {
+        try {
+            List<Post> postData = new ArrayList<Post>();
+            postRepository.findBypostIdUser(id).forEach(postData::add);
+            if (postData.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(postData, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping("/add")
     public ResponseEntity<Post> createPost(@RequestBody Post post) {
@@ -405,6 +418,7 @@ public class PostController {
     }
 
 }
+
 ```
 ```java
 // Post Repository
@@ -419,7 +433,7 @@ import com.example.ms_post.model.Post;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    List<Post> findByUserId(long userId);
+    List<Post> findBypostIdUser(long postIdUser);
    
 
 }
