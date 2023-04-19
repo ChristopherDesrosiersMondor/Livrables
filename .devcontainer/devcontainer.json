@@ -9,7 +9,8 @@
 			"extensions": [
 				"robole.markdown-snippets",
 				"DavidAnson.vscode-markdownlint",
-				"bierner.markdown-preview-github-styles"
+				"bierner.markdown-preview-github-styles",
+				"yzhang.markdown-all-in-one"
 			]
 		}
 	}
