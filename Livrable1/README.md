@@ -28,7 +28,12 @@ Pour le premier livrable, nous allons livrer les parties suivantes du développe
     - [Communauté](#communauté)
 
 ## Utilisation et configuration de Docker
-Nous avons déployé postgres en container. Ainsi, la base de données peut facilement être utilisé sur une nouvelle machine. Cela permet aussi la conservation des données. Il suffit d'avoir Docker Desktop d'installer sur son poste de travail pour pouvoir utiliser la base de données. Responsable: Christopher
+Nous avons déployé postgres en container. Ainsi, la base de données peut facilement être utilisé sur une nouvelle machine. Le deploiement se fait rapidement et sans installation. Les donnees ne sont pas persistentes entre les machines, mais la possibilite de lutiliser avec les services quon a developper reste toujours! Il suffit d'avoir Docker Desktop d'installer sur son poste de travail pour pouvoir utiliser la base de données. Responsable: Christopher
+
+### Screenshot du deploiement de pgAdmin et postgresql en docker
+![PgAdminWebRunning](./images/pgAdmin%20in%20docker.png)
+
+![PgAdminAndPostgresInDockerDesktop](./images/pgadmin%20and%20postgres%20in%20docker.png)
 
 ## Diagramme de classes
 Le diagramme de classes décrit les relations entre les différentes entités du projet. Responsables: Christopher, Valérie et Lou
