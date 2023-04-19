@@ -7,7 +7,9 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"robole.markdown-snippets"
+				"robole.markdown-snippets",
+				"DavidAnson.vscode-markdownlint",
+				"bierner.markdown-preview-github-styles"
 			]
 		}
 	}
