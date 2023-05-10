@@ -1063,7 +1063,21 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 }
 ```
 
+### Screenshot: documentation Swagger
+
+### Community
+![Doc swagger - community](./images/swagger-community.png)
+
+### Account
+![Doc swagger - account](./images/swagger-account.png)
+
+### Post
+![Doc swagger - post](./images/swagger-post.png)
+
+
 ## Page connexion et création de compte pour l'application mobile avec Flutter
+
+
 
 ## Début du client web en Svelte
 
