@@ -13,9 +13,9 @@ Pour le deuxième livrable, nous allons livrer les parties suivantes de notre ap
     - [Micro-service: account](#micro-service-account)
     - [Micro-service: post](#micro-service-post)
     - [Screenshot: documentation Swagger](#screenshot-documentation-swagger)
-    - [Community](#community)
-    - [Account](#account)
-    - [Post](#post)
+      - [Community](#community)
+      - [Account](#account)
+      - [Post](#post)
   - [Page connexion et création de compte pour l'application mobile avec Flutter](#page-connexion-et-création-de-compte-pour-lapplication-mobile-avec-flutter)
     - [Account](#account-1)
     - [Fichier configuration](#fichier-configuration)
@@ -48,6 +48,7 @@ Pour le deuxième livrable, nous allons livrer les parties suivantes de notre ap
       - [Adminer database selector](#adminer-database-selector)
       - [Adminer database dashboard](#adminer-database-dashboard)
       - [Adminer data viewer](#adminer-data-viewer)
+
 
 ## Rafinement des APIs et documentation swagger
 Nous avons améliorer les APIS développés au livrable 1. Par exemple, le micro-service *account* contient une nouvelle entité *Moderator*. Un utilisateur peut donc maintenant être un modérateur d'une certaine communauté. Nous avons aussi ajouté la documentation *Swagger* à tous nos APIs.
@@ -1100,13 +1101,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 ### Screenshot: documentation Swagger
 
-### Community
+#### Community
 ![Doc swagger - community](./images/swagger-community.png)
 
-### Account
+#### Account
 ![Doc swagger - account](./images/swagger-account.png)
 
-### Post
+#### Post
 ![Doc swagger - post](./images/swagger-post.png)
 
 
