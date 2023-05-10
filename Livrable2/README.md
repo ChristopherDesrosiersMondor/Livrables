@@ -219,19 +219,12 @@ public class CommunityController {
 
 ```java
 // Community Repository
-package com.example.ms_community;
+package com.example.ms_community.repository;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.repository.CrudRepository;
+import com.example.ms_community.model.Community;;
 
-@SpringBootApplication
-public class MsCommunityApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(MsCommunityApplication.class, args);
-	}
-
-}
+public interface CommunityRepository extends CrudRepository<Community, Long>{}
 ```
 ### Micro-service: account
 ```java
