@@ -1,15 +1,15 @@
 # Examen Pratique Web
 
 ## Description du livrable
-Nous allons livrer une nouvelle version de notre architecture en docker qui nous permet de déployer l'entièreté de notre application avec la même commande docker compose. Dans cette architecture, la base de donnée, l'outil de gestion de la base de donnée ainsi que le registre des services ont été configurés pour fonctionner sans problème dans le même conteneur. La partie précise livrée pour l'examen est celle du registre de services ainsi que son intégration dans les trois microservices.
+Nous allons livrer une nouvelle version de notre architecture en docker qui nous permet de déployer l'entièreté de notre application avec la même commande "docker compose". Dans cette architecture, la base de donnée, l'outil de gestion de la base de donnée ainsi que le registre des services ont été configurés pour fonctionner sans problème dans le même conteneur. La partie précise livrée pour l'examen est celle du registre de services ainsi que son intégration dans les trois microservices.
 
 ## Code & output
-### Ajouter les dependences necessaires a un projet pour intégrer consul, notre registre de services
-Pour comprendre ce qu'on doit faire pour ajouter le registry et que ca fonctionne avec nos services il faut suivre les étapes suivantes. Le tout à déjà été intégré à notre environnement.
+### Ajouter les dependences nécessaires à un projet pour intégrer *consul*, notre registre de services
+Pour comprendre ce qu'on doit faire pour ajouter le registre et que ça fonctionne avec nos services, il faut suivre les étapes suivantes. Le tout à déjà été intégré à notre environnement.
 
-D'abord on ajoute les dépendences et le dependencies manager
+D'abord on ajoute les dépendences et le *dependencies manager* à chaque micro-service.
 
-Dependences dans le pom.xml
+Dépendences dans le pom.xml
 
 ```xml
 <dependency>
@@ -22,7 +22,7 @@ Dependences dans le pom.xml
 </dependency>
 ```
 
-Dependencies manager a mettre apres la balise </dependencies>
+*Dependencies manager* à mettre apres la dernière balise *dependencies* 
 
 ```xml
 <dependencyManagement>
@@ -49,7 +49,7 @@ Changer le code de la balise parent par celui ci
 </parent>
 ```
 
-Ajouter cette propriete dans la balise properties (spring cloud version)
+Ajouter cette propriété dans la balise *properties* (spring cloud version)
 
 ```xml
 <properties>
@@ -58,33 +58,33 @@ Ajouter cette propriete dans la balise properties (spring cloud version)
 </properties>
 ```
 
-Dans application properties ajouter ces proprietes (changer ms_community pour le nom de votre service et consul-container pour le nom du container de consul qui est notre registre. ici laisser le comme ca)
+Dans *application.properties*, ajouter ces propriétés: changer nom_du_micro_service pour le nom de votre service et *consul-container* pour le nom du container.
 
 ```properties
-spring.application.name=ms_community
+spring.application.name=nom_de_micro_service
 spring.cloud.consul.host=consul-container
 spring.cloud.consul.port=8500
 spring.cloud.consul.discovery.prefer-ip-address=true
 ```
 
-Dans le compose.yaml ajouter ceci dans la propriete environnement de votre service
+Dans le compose.yaml ajouter ceci dans la propriete environnement du service
 
 ```yaml
 - WAIT_FOR_HOSTS=consul-container:8500
 ```
 
-Dans depends on, ajouter ceci
+Dans *depends on*, ajouter ceci
 
 ```yaml
 consul-container:
   condition: service_started
 ```
 
-La majorité des problemes etaient causes par le fait que les services ont besoin que consul soit demarrer et de savoir ou il est.
+La majorité des problèmes étaient causés par le fait que les services ont besoin que *consul* soit démarrer et de savoir où il est.
 
-C'est intéressant de voir les différences réseaux entre Docker et le réseau d'une machine ordinaire. En effet, nous avonc appris que pour accéder aux différents services ils doivent tous être présents dans un même réseau virtuel créé par Docker, dans notre exemple c'est le réseau darksea, et ce réseau doit être configuré dans le mode 'bridge' pour permettre aux services d'agir comme des services qui fonctionnent sur la machine host. De plus il faut s'assurer que les services sont configurés pour exposer le port utilisé dans le conteneur à la machine host et que l'ordre de démarrage des conteneurs tiennent compte des services dont ils ont besoin. Le tout prend la forme du depends on dans le fichier compose. Nous allons mettre un exemple du fichier complet après cette section.
+C'est intéressant de voir les différences réseaux entre Docker et le réseau d'une machine ordinaire. En effet, nous avonc appris que pour accéder aux différents services ils doivent tous être présents dans un même réseau virtuel créé par Docker. Dans notre exemple, c'est le réseau darksea, et ce réseau doit être configuré dans le mode 'bridge' pour permettre aux services d'agir comme des services qui fonctionnent sur la machine host. De plus il faut s'assurer que les services sont configurés pour exposer le port utilisé dans le conteneur à la machine host et que l'ordre de démarrage des conteneurs tiennent compte des services dont ils ont besoin. Le tout prend la forme du depends on dans le fichier compose. Nous allons mettre un exemple du fichier complet après cette section.
 
-Voir comment jai configurer consul pour afficher son hostname et faire partie du meme reseau que nos services.
+Voir comment nous avons configuré *consul* pour afficher son hostname et faire partie du même reseau que nos services.
 
 Quand vous avez fait les changements, faites les commandes suivantes pour rebuild vos images et les rendre disponible pour docker.
 
@@ -99,11 +99,11 @@ docker compose down
 docker compose up -d
 ```
 
-Aller voir au localhost:8500 si consul voit vos services. Vous verrez une interface simple avec les service et leur état. Si tous fonctionne bien, il devrait y avoir des check mark vertes et le nom des services.
+Aller voir au localhost:8500 si *consul* voit vos services. Vous verrez une interface simple avec les service et leur état. Si tous fonctionne bien, il devrait y avoir des check mark vertes et le nom des services.
 
 ### Le nouveau compose.yaml pour notre nouvelle infrastructure de déploiement en docker
 
-Remarquez le healthcheck dans la section db et les depends on de chaque service. Remarques aussi l'utilisation de volumes pour rendre les données persistentes entre les exécution.
+Remarquez le healthcheck dans la section db et les *depends on* de chaque service. Remarquez aussi l'utilisation de volumes pour rendre les données persistentes entre les exécution.
 
 ```yaml
 # Use postgres/example user/password credentials
