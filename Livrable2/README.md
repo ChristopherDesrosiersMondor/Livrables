@@ -1076,7 +1076,689 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
 
 ## Page connexion et création de compte pour l'application mobile avec Flutter
+Nous avons créé deux premières pages pour l'interface graphique: la page de connexion et la page de création de compte. Les deux pages sont connectés au micro-service *ms_account* et permettent à un utilisateur de s'inscrire et de se connecter. 
 
+### Account
+Pour pouvoir communiquer avec l'API, il faut créer une entité *Account*
+```dart
+class Account {
+  final int userId;
+  final String userLastName;
+  final String userFirstName;
+  final String userEmail;
+  final String userPseudo;
+  final String userPassword;
+  final DateTime userBirthday;
+
+  const Account({
+    required this.userId,
+    required this.userLastName,
+    required this.userFirstName,
+    required this.userEmail,
+    required this.userPseudo,
+    required this.userPassword,
+    required this.userBirthday,
+  });
+
+  // permet de transformer une entité en format json pour la communication avec l'API
+  factory Account.fromJson(Map<String, dynamic> json) {
+    return Account(
+        userId: json['userId'],
+        userLastName: json['userLastName'],
+        userFirstName: json['userFirstName'],
+        userEmail: json['userEmail'],
+        userPseudo: json['userPseudo'],
+        userPassword: json['userPassword'],
+        userBirthday: json['userBirthday']);
+  }
+}
+```
+
+### Fichier configuration
+Nous avons réuni les configurations communes entre plusieurs pages dans un fichier: *config.dart* afin de faciliter la lecture du code
+```dart
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class Configuration {
+  static const appDarkBackgroundColor = Color.fromARGB(255, 31, 30, 30);
+  static const orangeColor = Color(0xffff6633);
+
+  static TextStyle textForApp(Color color, double fontSize) {
+    return GoogleFonts.roboto(
+        textStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: color,
+            letterSpacing: .5,
+            fontSize: fontSize));
+  }
+
+  static Container inputField(
+      BuildContext context, TextEditingController controller, String hintText) {
+    return Container(
+      alignment: Alignment.center,
+      child: SizedBox(
+          height: 50,
+          width: MediaQuery.of(context).size.width * 0.9,
+          child: TextFormField(
+            controller: controller,
+            cursorColor: Colors.black,
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintStyle: const TextStyle(color: Colors.white60),
+              hintText: hintText,
+              filled: true,
+              fillColor: Colors.grey.shade700,
+              border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(20)),
+            ),
+            validator: (String? value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+          )),
+    );
+  }
+
+  static Container passwordInput(
+      BuildContext context, TextEditingController controller, String hintText) {
+    return Container(
+      alignment: Alignment.center,
+      child: SizedBox(
+        height: 50,
+        width: MediaQuery.of(context).size.width * 0.9,
+        child: TextFormField(
+          obscureText: true,
+          enableSuggestions: false,
+          autocorrect: false,
+          controller: controller,
+          cursorColor: Colors.black,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintStyle: const TextStyle(color: Colors.white60),
+            hintText: hintText,
+            filled: true,
+            fillColor: Colors.grey.shade700,
+            border: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(20)),
+          ),
+          validator: (String? value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter some text';
+            }
+            return null;
+          },
+        ),
+      ),
+    );
+  }
+
+  static ButtonStyle formButtonStyle(BuildContext context) {
+    return ElevatedButton.styleFrom(
+      backgroundColor: Colors.grey.shade800,
+      minimumSize: Size(MediaQuery.of(context).size.width * 0.95, 45),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+      ),
+    );
+  }
+}
+```
+### Fichier utilities
+Nous avons réuni des fonctions utiles à l'application dans un fichier *utilities.dart*
+
+```dart
+import 'dart:convert';
+import 'package:flutter/material.dart' hide Key;
+import 'package:http/http.dart' as http;
+import 'package:interface_mobile/account.dart';
+
+// Sources:
+// How to use alert dialogs
+// https://www.javatpoint.com/flutter-alert-dialogs
+
+// Http request with flutter
+// https://docs.flutter.dev/cookbook/networking/send-data
+// https://docs.flutter.dev/cookbook/networking/fetch-data
+
+// Hash text
+// https://medium.flutterdevs.com/explore-encrypt-decrypt-data-in-flutter-576425347439
+
+showAlertDialog(BuildContext context, String text) {
+  // Create button
+  Widget okButton = ElevatedButton(
+    child: const Text("OK"),
+    onPressed: () {
+      Navigator.of(context).pop();
+    },
+  );
+
+  // Create AlertDialog
+  AlertDialog alert;
+  alert = AlertDialog(
+    title: const Text('Ohé!'),
+    content: Text(text),
+    actions: [
+      okButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+// connecter un utilisateur
+Future<Account> userConnect(
+    BuildContext context, String pseudo, String password) async {
+  final response = await http.get(Uri.parse(
+      'http://10.0.2.2:8082/accounts/view/by_pseudo/$pseudo/$password'));
+
+  if (response.statusCode == 200) {
+    showAlertDialog(context, "Connexion réussie");
+    return Account.fromJson(jsonDecode(response.body));
+  } else {
+    showAlertDialog(context, "Erreur de connexion");
+    throw Exception('Failed to connect');
+  }
+}
+
+// créer un nouvel utilisateur
+Future<Account> createUser(
+    BuildContext context,
+    String lastName,
+    String firstName,
+    String email,
+    String pseudo,
+    String password,
+    String birthday) async {
+  final response = await http.post(
+    Uri.parse('http://10.0.2.2:8082/accounts/add'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'userLastName': lastName,
+      'userFirstName': firstName,
+      'userEmail': email,
+      'userPseudo': pseudo,
+      'userPassword': password,
+      'userBirthday': birthday
+    }),
+  );
+
+  if (response.statusCode == 201) {
+    showAlertDialog(context, "Compte créé avec succès");
+    return Account.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to create user.');
+  }
+}
+```
+
+### Page connexion
+
+```dart
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:interface_mobile/config.dart';
+import 'package:interface_mobile/creationcompte.dart';
+import 'package:interface_mobile/utilities.dart';
+
+class ConnexionPage extends StatelessWidget {
+  const ConnexionPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Configuration.appDarkBackgroundColor,
+      appBar: AppBar(
+        leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+            ),
+            onPressed: () {}),
+        title: const Center(
+          child: Icon(
+            Icons.anchor,
+            color: Configuration.orangeColor,
+          ),
+        ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 15, 20, 0),
+            child: Text.rich(TextSpan(children: [
+              TextSpan(
+                  style: Configuration.textForApp(Colors.white, 18),
+                  text: "Sign up",
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CreationCompte()),
+                      );
+                    }),
+            ])),
+          )
+        ],
+        backgroundColor: Configuration.appDarkBackgroundColor,
+      ),
+      body: const SingleChildScrollView(child: ConnexionForm()),
+    );
+  }
+}
+
+class ConnexionForm extends StatefulWidget {
+  const ConnexionForm({super.key});
+
+  @override
+  State<ConnexionForm> createState() => ConnexionFormState();
+}
+
+class ConnexionFormState extends State<ConnexionForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController pseudoController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    pseudoController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+              padding: const EdgeInsets.all(15),
+              child: Center(
+                child: Text('Log in to Hublot',
+                    style: Configuration.textForApp(Colors.white, 25)),
+              )),
+          Padding(
+              padding: const EdgeInsets.all(8),
+              child: Configuration.inputField(
+                  context, pseudoController, "Username")),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Configuration.passwordInput(
+                context, passwordController, "Password"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Text(
+              'Forgot password',
+              style: Configuration.textForApp(Configuration.orangeColor, 16),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 50.0),
+            child: Center(
+              child: ElevatedButton(
+                style: Configuration.formButtonStyle(context),
+                onPressed: () {
+                  // si le formulaire est validé
+                  if (_formKey.currentState!.validate()) {
+                    var pseudo = pseudoController.text;
+                    var password = passwordController.text;
+                    userConnect(context, pseudo, password);
+                  }
+                },
+                child: const Text('Continue'),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+### Page création de compte
+La création de compte est divisé sur deux pages
+
+```dart
+// Première page
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:interface_mobile/config.dart';
+import 'package:interface_mobile/creationcompteNext.dart';
+
+import 'connexion.dart';
+
+class CreationCompte extends StatelessWidget {
+  const CreationCompte({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Configuration.appDarkBackgroundColor,
+      appBar: AppBar(
+        leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+            ),
+            onPressed: () {}),
+        title: const Center(
+          child: Icon(
+            Icons.anchor,
+            color: Configuration.orangeColor,
+          ),
+        ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 15, 20, 0),
+            child: Text.rich(TextSpan(children: [
+              TextSpan(
+                  style: Configuration.textForApp(Colors.white, 18),
+                  text: "Log in",
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ConnexionPage()),
+                      );
+                    }),
+            ])),
+          )
+        ],
+        backgroundColor: Configuration.appDarkBackgroundColor,
+      ),
+      body: const SingleChildScrollView(child: CreationCompteForm()),
+    );
+  }
+}
+
+class CreationCompteForm extends StatefulWidget {
+  const CreationCompteForm({super.key});
+
+  @override
+  State<CreationCompteForm> createState() => CreationCompteFormState();
+}
+
+class CreationCompteFormState extends State<CreationCompteForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController pseudoController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    pseudoController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child:
+                Configuration.inputField(context, pseudoController, "Username"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Configuration.passwordInput(
+                context, passwordController, "Password"),
+          ),
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: 50.0),
+              child: Center(
+                child: ElevatedButton(
+                  style: Configuration.formButtonStyle(context),
+                  onPressed: () {
+                    // Validate will return true if the form is valid, or false if
+                    // the form is invalid.
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CreationCompteNext(
+                                username: pseudoController.text,
+                                password: passwordController.text)),
+                      );
+                    }
+                  },
+                  child: const Text('Next'),
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+}
+
+```
+
+```dart
+// Deuxième page
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:interface_mobile/config.dart';
+import 'package:interface_mobile/utilities.dart';
+import 'package:intl/intl.dart';
+
+import 'connexion.dart';
+
+// Sources
+// Datepicker in Flutter
+// https://www.fluttercampus.com/guide/39/how-to-show-date-picker-on-textfield-tap-and-get-formatted-date/
+
+class CreationCompteNext extends StatelessWidget {
+  const CreationCompteNext(
+      {super.key, required this.username, required this.password});
+
+  final String username;
+  final String password;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Configuration.appDarkBackgroundColor,
+      appBar: AppBar(
+        leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+            ),
+            onPressed: () {}),
+        title: const Center(
+          child: Icon(
+            Icons.anchor,
+            color: Configuration.orangeColor,
+          ),
+        ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 15, 20, 0),
+            child: Text.rich(TextSpan(children: [
+              TextSpan(
+                  style: Configuration.textForApp(Colors.white, 18),
+                  text: "Log in",
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ConnexionPage()),
+                      );
+                    }),
+            ])),
+          )
+        ],
+        backgroundColor: Configuration.appDarkBackgroundColor,
+      ),
+      body: SingleChildScrollView(
+          child: CreationCompteNextForm(
+        username: username,
+        password: password,
+      )),
+    );
+  }
+}
+
+class CreationCompteNextForm extends StatefulWidget {
+  const CreationCompteNextForm(
+      {super.key, required this.username, required this.password});
+
+  final String username;
+  final String password;
+
+  @override
+  State<CreationCompteNextForm> createState() => CreationCompteNextFormState();
+}
+
+class CreationCompteNextFormState extends State<CreationCompteNextForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController pseudoController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController birthdayController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Configuration.inputField(
+                context, lastNameController, "Last Name"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Configuration.inputField(
+                context, firstNameController, "First Name"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Configuration.inputField(context, emailController, "Email"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Container(
+              alignment: Alignment.center,
+              child: SizedBox(
+                height: 50,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: TextFormField(
+                  style: const TextStyle(color: Colors.white),
+                  controller: birthdayController,
+                  decoration: InputDecoration(
+                      icon: Icon(
+                        Icons.calendar_today,
+                        color: Colors.grey.shade700,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade700,
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(20)),
+                      hintText: "Birthday",
+                      hintStyle: const TextStyle(color: Colors.grey)),
+                  readOnly:
+                      true, //set it true, so that user will not able to edit text
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(
+                            1900), //DateTime.now() - not to allow to choose before today.
+                        lastDate: DateTime.now());
+
+                    if (pickedDate != null) {
+                      String formattedDate =
+                          DateFormat('yyyy-MM-dd').format(pickedDate);
+                      setState(() {
+                        birthdayController.text =
+                            formattedDate; //set output date to TextField value.
+                      });
+                    } else {
+                      showAlertDialog(
+                          context, "Veuillez sélectionner une date.");
+                    }
+                  },
+                ),
+              ),
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: 50.0),
+              child: Center(
+                child: ElevatedButton(
+                  style: Configuration.formButtonStyle(context),
+                  onPressed: () {
+                    // Validate will return true if the form is valid, or false if
+                    // the form is invalid.
+                    if (_formKey.currentState!.validate()) {
+                      var lastName = lastNameController.text;
+                      var firstName = firstNameController.text;
+                      var email = emailController.text;
+                      var pseudo = widget.username;
+                      var password = widget.password;
+                      var birthday = birthdayController.text;
+                      createUser(context, lastName, firstName, email, pseudo,
+                          password, birthday);
+                    }
+                  },
+                  child: const Text('Create Account'),
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+}
+```
+
+### Sceenshots: résultats
+Nous avons essayé de reproduire le plus possible l'application mobile Reddit.
+
+#### Connexion
+![Page connexion](./images/mobile-connection.png)
+
+Si l'utilisateur existe dans la base de données, le résultat est le suivant:
+![Page connexion - succès](./images/mobile-connection-success.png)
+
+Si l'utilisateur n'existe pas dans la base données ou entre le mauvais mot de passe, le résultat est le suivant:
+![Page connexion - erreur](./images/mobile-connection-error.png)
+
+#### Création de compte
+Voici la première page lors de la création d'un compte utilisateur:
+![Page connexion - 1](./images/newuser-page1.png)
+
+Voici la deuxième page lors de la création d'un compte utilisateur:
+![Page connexion - 2](./images/newuser-page2.png)
+
+Quand un utilisateur est ajouté avec succès, voici ce qui arrive:
+![Page connexion - succès](./images/newuser-success.png)
+
+Quand nous allons vérifier dans la base de données, l'utilisateur est bien ajouté:
+![Nouvel utilisateur base de données](./images/newuser-bd.png)
 
 
 ## Début du client web en Svelte
