@@ -1,3 +1,12 @@
+# Livrable 2
+Pour le deuxième livrable, nous allons livrer les parties suivantes de notre application:
+
+    1. Rafinement des APIs et documentation swagger
+    2. Page connexion et création de compte pour l'application mobile avec Flutter
+    3. Début du client web en Svelte
+    4. Tous les micro-services sur *Docker*
+    5. Utilisation de consul et adminer
+
 - [Livrable 2](#livrable-2)
   - [Rafinement des APIs et documentation swagger](#rafinement-des-apis-et-documentation-swagger)
     - [Micro-service: communauté](#micro-service-communauté)
@@ -39,15 +48,6 @@
       - [Adminer database selector](#adminer-database-selector)
       - [Adminer database dashboard](#adminer-database-dashboard)
       - [Adminer data viewer](#adminer-data-viewer)
-
-# Livrable 2
-Pour le deuxième livrable, nous allons livrer les parties suivantes de notre application:
-
-    1. Rafinement des APIs et documentation swagger
-    2. Page connexion et création de compte pour l'application mobile avec Flutter
-    3. Début du client web en Svelte
-    4. Tous les micro-services sur *Docker*
-    5. Utilisation de consul et adminer
 
 ## Rafinement des APIs et documentation swagger
 Nous avons améliorer les APIS développés au livrable 1. Par exemple, le micro-service *account* contient une nouvelle entité *Moderator*. Un utilisateur peut donc maintenant être un modérateur d'une certaine communauté. Nous avons aussi ajouté la documentation *Swagger* à tous nos APIs.
