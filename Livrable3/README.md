@@ -12,18 +12,29 @@ Pour l'application web, nous avons étoffé l'interface commencée dans le livra
 
 Lors du lancement de l'application, nous arrivons sur une page d'accueil qui contient les éléments suivants :
 
- - un header : logo, nom du site, barre de recherche, bouton Log in pour se connecter, icones soleil/lune pour régler le thème du site a dark ou light
- - une sidebar à gauche : lien vers l'accueil (Home), liens vers différentes commuunautés, bouton Sign inc pour se créer un compte
+ - un header : logo, nom du site, barre de recherche (non fonctionnelle), bouton *Log in* pour se connecter, icones soleil/lune pour régler le thème du site a dark ou light (fonctionnel)
+ - une sidebar à gauche : lien vers l'accueil (Home), liens vers différentes commuunautés, bouton *Sign in* pour se créer un compte
  - un thread central contenant les posts présents dans la base de données
 
 L'utilisateur a la possibilité de naviguer sur le site sans se connecter et accéder à toutes les communautés et tous les posts. Néanmoins, s'il souhaite créer un post ou un communauté, il est nécessaire de se créer un compte.
 
-Le bouton Sign in dans la sidebar ouvre une petite fenêtre avec un formulaire pour recueillir les informations du nouvel utilisateur (nom, prénom, date de naissance, pseudo, mot de passe, etc). Une fois le compte créé, l'utilisateur retrouve la page d'accueil modifiée :
+Le bouton *Sign in* dans la sidebar ouvre une petite fenêtre avec un formulaire pour recueillir les informations du nouvel utilisateur (nom, prénom, date de naissance, pseudo, mot de passe, etc). Une fois le compte créé, l'utilisateur retrouve la page d'accueil légrement modifiée :
 
-- le pseudo est affiché dans le header
-- le bouton Sign in n'apparaît plus
-- le bouton Log in est remplacé par un bouton Log out pour se déconnecter
+- le pseudo est affiché à droite dans le header 
+- le bouton *Sign in* n'apparaît plus
+- le bouton *Log in* est remplacé par un bouton *Log out* pour se déconnecter
 - un encart apparaît à droite du thread de posts avec un petit mot de bienvenue et 2 boutons pour créer un post et créer une communauté.
+
+Le bouton *Create a post* (fonctionnel) renvoie a une nouvelle page ou l'utilisateur peut écrire son post (titre, contenu, image, etc). Il y a un menu qui permet de choisir la communauté dans laquelle publier (non fonctionnel). Il y a également un bouton *Save draft* pour sauvegarder le post en brouillon (non fonctionnel) et un bouton pour publier le post (fonctionnel). Après la publication, l'utilisateur est renvoyé automatiquement à la page d'accueil ou il retrouvera le post nouvellement créé à la suite des autres posts.
+
+Le bouton *Create a community* (fonctionnel) ouvre une petite fenêtre avec un formulaire pour recueillir les informations de la nouvelle communauté (nom, description). Une fois créée, l'utilisateur est envoyé sur la page de la communauté créée.
+
+Le bouton *Log in* (fonctionnel) permet à l'utilisateur de se connecter si son compte est existant dans la base de données. Si le pseudo ou le mot de passe ne correspond pas, un message d'erreur est affiché. Une fois connecté, l'utilisateur retrouve la même page d'accueil modifiée qu'après une création de nouveau compte.
+
+Le bouton *Log out* (fonctionnel) permet à l'utilisateur de se déconnecter.
+
+Dans le thead central de la page, chaque post affiche un titre, contenu, image, nom du créateur du post, communité d'appartenance (non fonctionnel) et date de publication.
+Il est possible de supprimer un post en cliquant sur le bouton *Delete* (fonctionnel) au bas du post. Il est également possible de cliquer les flèches haut pour 'upvoter' le post et bas pour le 'downvoter' (même principe que sur Reddit).
 
 ## Client Mobile
 Pour l'application mobile, nous avons ajouté les pages suivantes: la page *Home* et la page création de post. La page Home affiche tous les posts de la base de données. Tous les posts contiennent les éléments suivants: icon(account), nom de l'utilisateur ayant créé la publication, la date de création, un icon (3 points) permettant de supprimer un post, le titre, le contenu(s'il y a lieu), l'image(s'il y a lieu) ainsi que les boutons(icon) *upvote* et *downvote* tous les deux fonctionnels. Les autres boutons sont présents mais non fonctionnels: *comment* et *share*. 
