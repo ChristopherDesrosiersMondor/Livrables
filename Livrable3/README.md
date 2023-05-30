@@ -1,15 +1,39 @@
 # Livrable 3
 Pour le troisième livrable, nous allons livrer les parties suivantes de notre application:
 
-    1. Client web avec les fonctionnalités CRUD pour chaque microservices
-    2. Client mobile avec les fonctionalités CRUD pour chaque microservices
-    3. Une version docker finalisée du client web et des microservices pour un déploiement simple
+    1. Client web utilisant les fonctionnalités de chaque microservices
+    2. Client mobile utilisant les fonctionnalités de chaque microservices
+    3. Une version docker des microservices pour un déploiement simple
     4. Une documentation complète pour le projet
     5. Un guide utilisateur.ice et un guide de développement sous format vidéo
 
 ## Client Web
 
 ## Client Mobile
+Pour l'application mobile, nous avons ajouté les pages suivantes: la page *Home* et la page création de post. La page Home affiche tous les posts de la base de données. Tous les posts contiennent les éléments suivants: icon(account), nom de l'utilisateur ayant créé la publication, la date de création, un icon (3 points) permettant de supprimer un post, le titre, le contenu(s'il y a lieu), l'image(s'il y a lieu) ainsi que les boutons(icon) *upvote* et *downvote* tous les deux fonctionnels. Les autres boutons sont présents mais non fonctionnels: *comment* et *share*. 
+
+Ensuite, la page *Create post* est divisé en deux. Une première page contenant des champs *input* permettant d'entrer le titre, le contenu et le lien de l'image désiré et une deuxième page pour choisir la communauté où publier. 
+
+Important: la création de publication peut se faire seulement si l'utilisateur est connecté! Une autre fonctionnalité que nous avons ajouté. Pour le moment, il faut se connecter à chaque création de publication, car l'application ne garde pas en mémoire l'utilisateur connecté après qu'une publication soit créée (problème à régler). Par contre, la publication se créée efficament selon l'utilisateur qui vient de se connecter.
+
+Finalement, l'application contient une barre de navigation au bas de la page. Le premier icon renvoie à la page *Home* (fonctionnelle), le deuxième à *Discovery* (en construction), le troisième à la page *Create post* (fonctionnelle), le quatrième à la page *Chat* (en construction) et le dernier à la page *Inbox* (en construction). Le haut de la page contient divers éléments aussi (afin d'imiter l'application Reddit): un icon menu(non fonctionnel), un *dropdown menu* (non fonctionnel), un icon recherche (non fonctionnel) et un icon *account* lui redirigeant vers la page de connexion. À noter que la page de connection permet d'accéder à la page de création de compte. 
+
+#### Sceenshots
+##### Page Connexion
+En premier l'utilisateur se connecte
+![Page Connexion](./images/loginpage.png)
+##### Page Create post
+Après l'utilisateur insère le titre, le contenu et le lien de l'image du post à créer
+![Page CreatePost - 1](./images/createpostpage1.png)
+Il choisit la communauté désirée
+![Page CreatePost - 2](./images/createpostpage2.png)
+Il publie le tout!
+![Page CreatePost - 3](./images/createpostpage3.png)
+##### Page Home
+![Page Home](./images/home.png)
+
+
+
 
 ## Images docker
 ### Microservices
