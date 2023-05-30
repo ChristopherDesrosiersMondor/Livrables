@@ -33,7 +33,7 @@ Le bouton *Log in* (fonctionnel) permet à l'utilisateur de se connecter si son 
 
 Le bouton *Log out* (fonctionnel) permet à l'utilisateur de se déconnecter.
 
-Dans le thead central de la page, chaque post affiche un titre, contenu, image, nom du créateur du post, communité d'appartenance (non fonctionnel) et date de publication.
+Dans le thead central de la page, chaque post affiche un titre, contenu, image, nom du créateur du post (non fonctionnel), communauté d'appartenance (non fonctionnel) et date de publication.
 Il est possible de supprimer un post en cliquant sur le bouton *Delete* (fonctionnel) au bas du post. Il est également possible de cliquer les flèches haut pour 'upvoter' le post et bas pour le 'downvoter' (même principe que sur Reddit).
 
 ## Client Mobile
