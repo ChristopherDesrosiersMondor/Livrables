@@ -8,6 +8,22 @@ Pour le troisième livrable, nous allons livrer les parties suivantes de notre a
     5. Un guide utilisateur.ice et un guide de développement sous format vidéo
 
 ## Client Web
+Pour l'application web, nous avons étoffé l'interface commencée dans le livrable 2.
+
+Lors du lancement de l'application, nous arrivons sur une page d'accueil qui contient les éléments suivants :
+
+ - un header : logo, nom du site, barre de recherche, bouton Log in pour se connecter, icones soleil/lune pour régler le thème du site a dark ou light
+ - une sidebar à gauche : lien vers l'accueil (Home), liens vers différentes commuunautés, bouton Sign inc pour se créer un compte
+ - un thread central contenant les posts présents dans la base de données
+
+L'utilisateur a la possibilité de naviguer sur le site sans se connecter et accéder à toutes les communautés et tous les posts. Néanmoins, s'il souhaite créer un post ou un communauté, il est nécessaire de se créer un compte.
+
+Le bouton Sign in dans la sidebar ouvre une petite fenêtre avec un formulaire pour recueillir les informations du nouvel utilisateur (nom, prénom, date de naissance, pseudo, mot de passe, etc). Une fois le compte créé, l'utilisateur retrouve la page d'accueil modifiée :
+
+- le pseudo est affiché dans le header
+- le bouton Sign in n'apparaît plus
+- le bouton Log in est remplacé par un bouton Log out pour se déconnecter
+- un encart apparaît à droite du thread de posts avec un petit mot de bienvenue et 2 boutons pour créer un post et créer une communauté.
 
 ## Client Mobile
 Pour l'application mobile, nous avons ajouté les pages suivantes: la page *Home* et la page création de post. La page Home affiche tous les posts de la base de données. Tous les posts contiennent les éléments suivants: icon(account), nom de l'utilisateur ayant créé la publication, la date de création, un icon (3 points) permettant de supprimer un post, le titre, le contenu(s'il y a lieu), l'image(s'il y a lieu) ainsi que les boutons(icon) *upvote* et *downvote* tous les deux fonctionnels. Les autres boutons sont présents mais non fonctionnels: *comment* et *share*. 
