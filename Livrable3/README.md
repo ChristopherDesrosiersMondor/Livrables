@@ -333,9 +333,13 @@ Il est possible de supprimer un post en cliquant sur le bouton _Delete_ (fonctio
 
 Le mode -light ou dark- peut être modifié à l'aide des icônes de soleil et de lune en haut à droite de la page.
 
-#### Page d'accueil dark mode
+#### Page d'accueil dark mode (exemple 1)
 
 ![front page dark mode](./images/home_dark.png)
+
+#### Page d'accueil dark mode (exemple 2)
+
+![front page dark mode](./images/web-client-community-posts.png)
 
 #### Création de compte (1)
 
@@ -402,6 +406,8 @@ Il publie le tout!
 #### Page Home
 
 ![Page Home](./images/home.png)
+
+![Page Home](./images/home2.png)
 
 ## Microservices
 
