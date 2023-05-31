@@ -1,12 +1,50 @@
 # Livrable 3
 Pour le troisième livrable, nous allons livrer les parties suivantes de notre application:
 
-    1. Client web utilisant les fonctionnalités de chaque microservices
-    2. Client mobile utilisant les fonctionnalités de chaque microservices
-    3. Une version docker des microservices pour un déploiement simple
-    4. Une documentation complète pour le projet
-    5. Un guide utilisateur.ice et un guide de développement sous format vidéo
+  1. Une documentation complète pour le projet
+     1. Client web utilisant les fonctionnalités de chaque microservices
+     2. Client mobile utilisant les fonctionnalités de chaque microservices
+     3. Une version docker des microservices pour un déploiement simple
+  2. Un guide utilisateur.ice et un guide de développement sous format vidéo
 
+- [Livrable 3](#livrable-3)
+  - [Documentation complète pour le projet](#documentation-complète-pour-le-projet)
+    - [Client Web](#client-web)
+      - [Concept utiles en svelte](#concept-utiles-en-svelte)
+      - [Techniques d'architecture](#techniques-darchitecture)
+      - [Utilisation du client](#utilisation-du-client)
+    - [Client Mobile](#client-mobile)
+      - [Sceenshots](#sceenshots)
+        - [Page Connexion](#page-connexion)
+        - [Page Create post](#page-create-post)
+        - [Page Home](#page-home)
+    - [Microservices](#microservices)
+      - [Code](#code)
+        - [Controller](#controller)
+        - [Model](#model)
+        - [Repository](#repository)
+        - [Application](#application)
+        - [application.properties](#applicationproperties)
+        - [DockerFile](#dockerfile)
+      - [Exporter le tout vers votre repo dockerhub pour utilisation ultérieure](#exporter-le-tout-vers-votre-repo-dockerhub-pour-utilisation-ultérieure)
+      - [Docker compose](#docker-compose)
+      - [Aides visuels pour le backend](#aides-visuels-pour-le-backend)
+        - [État de docker desktop après la commande docker compose up](#état-de-docker-desktop-après-la-commande-docker-compose-up)
+        - [Consul après initialisation de tous les services](#consul-après-initialisation-de-tous-les-services)
+        - [Adminer - votre page d'accueil pour l'utilisation de cet outil de gestion de base de donnée](#adminer---votre-page-daccueil-pour-lutilisation-de-cet-outil-de-gestion-de-base-de-donnée)
+        - [Adminer - votre page d'accueil pour l'utilisation de cet outil de gestion de base de donnée](#adminer---votre-page-daccueil-pour-lutilisation-de-cet-outil-de-gestion-de-base-de-donnée-1)
+        - [Microservice - community, swagger](#microservice---community-swagger)
+        - [Microservice - post, swagger](#microservice---post-swagger)
+        - [Microservice - account, swagger](#microservice---account-swagger)
+        - [Notes sur les instructions](#notes-sur-les-instructions)
+  - [Guides](#guides)
+    - [Guide d'utilisateur.ice](#guide-dutilisateurice)
+    - [Guide de développement](#guide-de-développement)
+  - [Améliorations futures et intropections sur le projet](#améliorations-futures-et-intropections-sur-le-projet)
+
+
+
+## Documentation complète pour le projet
 ### Client Web
 #### Concept utiles en svelte
 Nous le verrons plus dans le guide développeur, mais svelte offre plusieurs avantages sur d'autres framework, particulièrement l'option de render de l'information du côté serveur et du côté client ou de un ou l'autre. À l'aide des fichier +page.ts et +page.server.ts nous pouvons choisir ce qui est exécuter par le serveur ou par le client avant de télécharger et d'afficher les informations de la page. Voici un exemple où on demande au serveur de trouver toutes les communautés.
@@ -313,15 +351,6 @@ Il publie le tout!
 ##### Page Home
 ![Page Home](./images/home.png)
 
-
-
-
-## Images docker
-### Microservices
-
-### Client Web
-
-## Documentation complète pour le projet
 ### Microservices
 Nous avons développer les trois microservices: ms_community, ms_account, ms_post avec l'aide de java springboot et de maven. Nous avons pris avantage du pouvoirs des annotations Lombok et de plusieurs dépendences web et base de données qui s'intégraient dans un projet java backend comme le notre. Pour reproduire nos microservices il vous faudra lancer un projet avec springboot initializer <https://start.spring.io/> en sélectionnant les options suivantes : Maven, Java, Spring boot 3.1.0 Java 17 et Packaging .jar. Ensuite, pour éviter tout type d'erreur, je vous recommande de prendre ce document pom.xml et de remplacer le contenu généré par initializer par celui-ci:
 
