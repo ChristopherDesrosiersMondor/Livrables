@@ -1,24 +1,24 @@
 # Livrable 3
+
 Pour le troisième livrable, nous allons livrer les parties suivantes de notre application:
 
-  1. Une documentation complète pour le projet
-     1. Client web utilisant les fonctionnalités de chaque microservices
-     2. Client mobile utilisant les fonctionnalités de chaque microservices
-     3. Une version docker des microservices pour un déploiement simple
-  2. Un guide utilisateur.ice et un guide de développement sous format vidéo
-  3. Une section d'améliorations futures et d'instrospection sur le projet
+1. Une documentation complète pour le projet
+   1. Client web utilisant les fonctionnalités de chaque microservices
+   2. Client mobile utilisant les fonctionnalités de chaque microservices
+   3. Une version docker des microservices pour un déploiement simple
+2. Un guide utilisateur.ice et un guide de développement sous format vidéo
+3. Une section d'améliorations futures et d'instrospection sur le projet
 
 - [Livrable 3](#livrable-3)
   - [Documentation complète pour le projet](#documentation-complète-pour-le-projet)
     - [Client Web](#client-web)
       - [Concept utiles en svelte](#concept-utiles-en-svelte)
       - [Techniques d'architecture](#techniques-darchitecture)
-      - [Utilisation du client](#utilisation-du-client)
+      - [Utilisation du client web](#utilisation-du-client-web)
+      - [Aide visuelle pour le web](#aide-visuelle-pour-le-web)
     - [Client Mobile](#client-mobile)
-      - [Sceenshots](#sceenshots)
-        - [Page Connexion](#page-connexion)
-        - [Page Create post](#page-create-post)
-        - [Page Home](#page-home)
+      - [Utilisation du client mobile](#utilisation-du-client-mobile)
+      - [Aide visuelle pour le mobile](#aide-visuelle-pour-le-mobile)
     - [Microservices](#microservices)
       - [Code](#code)
         - [Controller](#controller)
@@ -29,7 +29,7 @@ Pour le troisième livrable, nous allons livrer les parties suivantes de notre a
         - [DockerFile](#dockerfile)
       - [Exporter le tout vers votre repo dockerhub pour utilisation ultérieure](#exporter-le-tout-vers-votre-repo-dockerhub-pour-utilisation-ultérieure)
       - [Docker compose](#docker-compose)
-      - [Aides visuels pour le backend](#aides-visuels-pour-le-backend)
+      - [Aide visuelle pour le backend](#aide-visuelle-pour-le-backend)
         - [État de docker desktop après la commande docker compose up](#état-de-docker-desktop-après-la-commande-docker-compose-up)
         - [Consul après initialisation de tous les services](#consul-après-initialisation-de-tous-les-services)
         - [Adminer - votre page d'accueil pour l'utilisation de cet outil de gestion de base de donnée](#adminer---votre-page-daccueil-pour-lutilisation-de-cet-outil-de-gestion-de-base-de-donnée)
@@ -43,29 +43,28 @@ Pour le troisième livrable, nous allons livrer les parties suivantes de notre a
     - [Guide de développement](#guide-de-développement)
   - [Améliorations futures et intropections sur le projet](#améliorations-futures-et-intropections-sur-le-projet)
 
+# Documentation complète pour le projet
 
+## Client Web
 
-## Documentation complète pour le projet
-### Client Web
-#### Concept utiles en svelte
+### Concept utiles en svelte
+
 Nous le verrons plus dans le guide développeur, mais svelte offre plusieurs avantages sur d'autres framework, particulièrement l'option de render de l'information du côté serveur et du côté client ou de un ou l'autre. À l'aide des fichier +page.ts et +page.server.ts nous pouvons choisir ce qui est exécuter par le serveur ou par le client avant de télécharger et d'afficher les informations de la page. Voici un exemple où on demande au serveur de trouver toutes les communautés.
 
 ```typescript
-import { communityUrl } from '$lib/config';
-
+import { communityUrl } from "$lib/config";
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params }) {
-    let community = null;
-    const url = communityUrl + 'communities/get/' + params.communityName;
-    const response = await fetch(url);
-    community = await response.json();        
-    console.log(community);
-    
-    return {
-        community
-    };
+  let community = null;
+  const url = communityUrl + "communities/get/" + params.communityName;
+  const response = await fetch(url);
+  community = await response.json();
+  console.log(community);
 
+  return {
+    community,
+  };
 }
 ```
 
@@ -74,202 +73,198 @@ Le routing client en svelte est impressionant, nous permettant de structurer le 
 ![routing en svelte](./images/routing-svelte.png)
 
 ```html
-{#if propValue != null}
-  {#each propValue as community}
-    <a
-      role="menuitem"
-      class="sidebar-menu-link"
-      tabindex="-1"
-      aria-label="./"
-      href="/h/{community.communityName}"
-    >
-      <i class="sidebar-icons icon"><Trophy /></i>
-      <span class="sidebar-items-text">h/{community.communityName}</span>
-    </a>
-  {/each}
-{/if}
+{#if propValue != null} {#each propValue as community}
+<a
+  role="menuitem"
+  class="sidebar-menu-link"
+  tabindex="-1"
+  aria-label="./"
+  href="/h/{community.communityName}"
+>
+  <i class="sidebar-icons icon"><Trophy /></i>
+  <span class="sidebar-items-text">h/{community.communityName}</span>
+</a>
+{/each} {/if}
 ```
 
 Comme on le voit ici, svelte est un puissant outil de développement front-end. En effet, on utilise à la fois ses avantages de routing en appelant seulement le lien href de la même manière que l'arborescence vu plus haut, mais en plus on peut utiliser une variable définie dans le script (community) avec l'usage des braquettes {} pour compléter la route. En effet, en svelte on peut créer des routes avec des paramètres très facilement en donnant une slug (nom utilisé pour décrire le paramètre url d'une route) à notre dossier en utilisant les braquettes []! Ici la slug est nommée communityName et est accessible par les paramètres de l'url comme dans le code ci-dessus ou ont trouvait les communautés (voir l'utilisation de params).
 
-#### Techniques d'architecture
+### Techniques d'architecture
+
 Nous avons utiliser le concept de classes en css pour créer des variables de couleur utilisable partout sur notre client web. L'avantage de cette approche est de permettre aux développeur d'utiliser les mêmes noms de variables sur plusieurs composants et de changer le thème du site en entier rapidement. Dans le fichier app.css vous trouverez des exemples de ces variables et leur usage dans notre cas pour offrir un thème clair et un thème sombre au simple clic d'un bouton. Voici le code.
 
 ```css
-@import '@fontsource/manrope';
-@import '@fontsource/jetbrains-mono';
+@import "@fontsource/manrope";
+@import "@fontsource/jetbrains-mono";
 
 html {
-	/* font */
-	--font-sans: Verdana, arial, 'Manrope', sans-serif;
-	--font-mono: Verdana, arial, 'JetBrains Mono', monospace;
+  /* font */
+  --font-sans: Verdana, arial, "Manrope", sans-serif;
+  --font-mono: Verdana, arial, "JetBrains Mono", monospace;
 
-	/* dark */
-	--title-dark: #d7dadc;
-	--brand-dark: var(--orange-3);
-	--text-1-dark: var(--gray-3);
-	--text-2-dark: #757575;
-	--main-text-dark: white;
-	--surface-1-dark: var(--gray-12);
-	--surface-2-dark: var(--gray-11);
-	--surface-3-dark: var(--gray-10);
-	--surface-4-dark: var(--gray-9);
-	--background-dark: black;
-	--header-background-dark: #1a1a1b;
-	--border-dark: var(--gray-9);
-	--sidebar-background-dark: #1a1a1b;
-	--searchbar-background-color-dark: #272729;
-	--reg-border-color-dark: grey;
-	--hover-border-color-dark: white;
-	--hover-sidebar-dark: #232324;
-	--back-to-top-btn-dark: #0079d3;
-	/* --back-to-top-btn-hover-dark: #e4e6e7; */
-	--hublot-body-dark: #1a1a1b;
-	--hublot-line-dark: #343536;
-	--new-hublot-field-dark: #272729;
-	--new-hublot-line-dark: #343536;
-	--new-hublot-votes-dark: rgba(18, 18, 19, 0.8);
-	
+  /* dark */
+  --title-dark: #d7dadc;
+  --brand-dark: var(--orange-3);
+  --text-1-dark: var(--gray-3);
+  --text-2-dark: #757575;
+  --main-text-dark: white;
+  --surface-1-dark: var(--gray-12);
+  --surface-2-dark: var(--gray-11);
+  --surface-3-dark: var(--gray-10);
+  --surface-4-dark: var(--gray-9);
+  --background-dark: black;
+  --header-background-dark: #1a1a1b;
+  --border-dark: var(--gray-9);
+  --sidebar-background-dark: #1a1a1b;
+  --searchbar-background-color-dark: #272729;
+  --reg-border-color-dark: grey;
+  --hover-border-color-dark: white;
+  --hover-sidebar-dark: #232324;
+  --back-to-top-btn-dark: #0079d3;
+  /* --back-to-top-btn-hover-dark: #e4e6e7; */
+  --hublot-body-dark: #1a1a1b;
+  --hublot-line-dark: #343536;
+  --new-hublot-field-dark: #272729;
+  --new-hublot-line-dark: #343536;
+  --new-hublot-votes-dark: rgba(18, 18, 19, 0.8);
 
-
-
-	/* light */
-	--title-light: black;
-	--brand-light: var(--orange-10);
-	--text-1-light: var(--gray-8);
-	--text-2-light: #757575;
-	--main-text-light: black;
-	--surface-1-light: #dae0e6;
-	--surface-2-light: var(--gray-1);
-	--surface-3-light: var(--gray-2);
-	--surface-4-light: var(--gray-3);
-	--background-light: rgb(219, 224, 230);
-	--header-background-light: white;
-	--border-light: var(--gray-4);
-	--sidebar-background-light: white;
-	--searchbar-background-color-light: #f6f7f8;
-	--reg-border-color-light: grey;
-	--hover-border-color-light: #0079d3;
-	--hover-sidebar-light: #f5f5f5;
-	--back-to-top-btn-light: #0079d3;
-	/* --back-to-top-btn-hover-light: #e4e6e7; */
-	--hublot-body-light: #ffffff;
-	--hublot-line-light: #edeff1;
-	--new-hublot-field-light: #f6f7f8;
-	--new-hublot-line-light: #edeff1;
-	--new-hublot-votes-light: rgba(255,255,255,0.8);
+  /* light */
+  --title-light: black;
+  --brand-light: var(--orange-10);
+  --text-1-light: var(--gray-8);
+  --text-2-light: #757575;
+  --main-text-light: black;
+  --surface-1-light: #dae0e6;
+  --surface-2-light: var(--gray-1);
+  --surface-3-light: var(--gray-2);
+  --surface-4-light: var(--gray-3);
+  --background-light: rgb(219, 224, 230);
+  --header-background-light: white;
+  --border-light: var(--gray-4);
+  --sidebar-background-light: white;
+  --searchbar-background-color-light: #f6f7f8;
+  --reg-border-color-light: grey;
+  --hover-border-color-light: #0079d3;
+  --hover-sidebar-light: #f5f5f5;
+  --back-to-top-btn-light: #0079d3;
+  /* --back-to-top-btn-hover-light: #e4e6e7; */
+  --hublot-body-light: #ffffff;
+  --hublot-line-light: #edeff1;
+  --new-hublot-field-light: #f6f7f8;
+  --new-hublot-line-light: #edeff1;
+  --new-hublot-votes-light: rgba(255, 255, 255, 0.8);
 }
 
 :root {
-	color-scheme: dark;
+  color-scheme: dark;
 
-	--title: var(--title-dark);
-	--brand: var(--brand-dark);
-	--text-1: var(--text-1-dark);
-	--text-2: var(--text-2-dark);
-	--main-text: var(--main-text-dark);
-	--surface-1: var(--surface-1-dark);
-	--surface-2: var(--surface-2-dark);
-	--surface-3: var(--surface-3-dark);
-	--surface-4: var(--surface-4-dark);
-	--background: var(--background-dark);
-	--border: var(--border-dark);
-	--sidebar-background: var(--sidebar-background-dark);
-	--header-background: var(--header-background-dark);
-	--searchbar-background-color: var(--searchbar-background-color-dark);
-	--reg-border-color: var(--reg-border-color-dark);
-	--hover-border-color: var(--hover-border-color-dark);
-	--hover-sidebar: var(--hover-sidebar-dark); 
-	--back-to-top-btn : var(--back-to-top-btn-dark);
-	/* --back-to-top-btn-hover: var(--back-to-top-btn-hover-dark) ; */
-	--hover-sidebar: var(--hover-sidebar-dark);
-	--hublot-body: var(--hublot-body-dark);
-	--hublot-line: var(--hublot-line-dark);
-	--new-hublot-field: var(--new-hublot-field-dark);
-	--new-hublot-line: var(--new-hublot-line-dark);
-	--new-hublot-votes: var(--new-hublot-votes-dark);
+  --title: var(--title-dark);
+  --brand: var(--brand-dark);
+  --text-1: var(--text-1-dark);
+  --text-2: var(--text-2-dark);
+  --main-text: var(--main-text-dark);
+  --surface-1: var(--surface-1-dark);
+  --surface-2: var(--surface-2-dark);
+  --surface-3: var(--surface-3-dark);
+  --surface-4: var(--surface-4-dark);
+  --background: var(--background-dark);
+  --border: var(--border-dark);
+  --sidebar-background: var(--sidebar-background-dark);
+  --header-background: var(--header-background-dark);
+  --searchbar-background-color: var(--searchbar-background-color-dark);
+  --reg-border-color: var(--reg-border-color-dark);
+  --hover-border-color: var(--hover-border-color-dark);
+  --hover-sidebar: var(--hover-sidebar-dark);
+  --back-to-top-btn: var(--back-to-top-btn-dark);
+  /* --back-to-top-btn-hover: var(--back-to-top-btn-hover-dark) ; */
+  --hover-sidebar: var(--hover-sidebar-dark);
+  --hublot-body: var(--hublot-body-dark);
+  --hublot-line: var(--hublot-line-dark);
+  --new-hublot-field: var(--new-hublot-field-dark);
+  --new-hublot-line: var(--new-hublot-line-dark);
+  --new-hublot-votes: var(--new-hublot-votes-dark);
 }
 
 @media (prefers-color-scheme: light) {
-	:root {
-		color-scheme: light;
-		
-		--title: var(--title-light);
-		--brand: var(--brand-light);
-		--text-1: var(--text-1-light);
-		--text-2: var(--text-2-light);
-		--main-text: var(--main-text-light);
-		--surface-1: var(--surface-1-light);
-		--surface-2: var(--surface-2-light);
-		--surface-3: var(--surface-3-light);
-		--surface-4: var(--surface-4-light);
-		--background: var(--background-light);
-		--border: var(--border-light);
-		--sidebar-background: var(--sidebar-background-light);
-		--header-background: var(--header-background-light);
-		--searchbar-background-color: var(--searchbar-background-color-light);
-		--reg-border-color: var(--reg-border-color-light);
-		--hover-border-color: var(--hover-border-color-light);
-		--hover-sidebar: var(--hover-sidebar-light);
-		--back-to-top-btn : var(--back-to-top-btn-light);
-		/* --back-to-top-btn-hover: var(--back-to-top-btn-hover-light) ; */
-		--hublot-body: var(--hublot-body-light);
-		--hublot-line: var(--hublot-line-light);
-		--new-hublot-field: var(--new-hublot-field-light);
-		--new-hublot-line: var(--new-hublot-line-light);
-		--new-hublot-votes: var(--new-hublot-votes-light);
-	}
+  :root {
+    color-scheme: light;
+
+    --title: var(--title-light);
+    --brand: var(--brand-light);
+    --text-1: var(--text-1-light);
+    --text-2: var(--text-2-light);
+    --main-text: var(--main-text-light);
+    --surface-1: var(--surface-1-light);
+    --surface-2: var(--surface-2-light);
+    --surface-3: var(--surface-3-light);
+    --surface-4: var(--surface-4-light);
+    --background: var(--background-light);
+    --border: var(--border-light);
+    --sidebar-background: var(--sidebar-background-light);
+    --header-background: var(--header-background-light);
+    --searchbar-background-color: var(--searchbar-background-color-light);
+    --reg-border-color: var(--reg-border-color-light);
+    --hover-border-color: var(--hover-border-color-light);
+    --hover-sidebar: var(--hover-sidebar-light);
+    --back-to-top-btn: var(--back-to-top-btn-light);
+    /* --back-to-top-btn-hover: var(--back-to-top-btn-hover-light) ; */
+    --hublot-body: var(--hublot-body-light);
+    --hublot-line: var(--hublot-line-light);
+    --new-hublot-field: var(--new-hublot-field-light);
+    --new-hublot-line: var(--new-hublot-line-light);
+    --new-hublot-votes: var(--new-hublot-votes-light);
+  }
 }
 
-[color-scheme='dark'] {
-	color-scheme: dark;
+[color-scheme="dark"] {
+  color-scheme: dark;
 
-	--title: var(--title-dark);
-	--brand: var(--brand-dark);
-	--text-1: var(--text-1-dark);
-	--text-2: var(--text-2-dark);
-	--main-text: var(--main-text-dark);
-	--surface-1: var(--surface-1-dark);
-	--surface-2: var(--surface-2-dark);
-	--surface-3: var(--surface-3-dark);
-	--surface-4: var(--surface-4-dark);
-	--background: var(--background-dark);
-	--border: var(--border-dark);
-	--sidebar-background: var(--sidebar-background-dark);
-	--header-background: var(--header-background-dark);
-	--searchbar-background-color: var(--searchbar-background-color-dark); 
-	--hover-sidebar: var(--hover-sidebar-dark);
-	--hublot-body: var(--hublot-body-dark);
-	--hublot-line: var(--hublot-line-dark);
-	--new-hublot-field: var(--new-hublot-field-dark);
-	--new-hublot-line: var(--new-hublot-line-dark);
-	--new-hublot-votes: var(--new-hublot-votes-dark);
+  --title: var(--title-dark);
+  --brand: var(--brand-dark);
+  --text-1: var(--text-1-dark);
+  --text-2: var(--text-2-dark);
+  --main-text: var(--main-text-dark);
+  --surface-1: var(--surface-1-dark);
+  --surface-2: var(--surface-2-dark);
+  --surface-3: var(--surface-3-dark);
+  --surface-4: var(--surface-4-dark);
+  --background: var(--background-dark);
+  --border: var(--border-dark);
+  --sidebar-background: var(--sidebar-background-dark);
+  --header-background: var(--header-background-dark);
+  --searchbar-background-color: var(--searchbar-background-color-dark);
+  --hover-sidebar: var(--hover-sidebar-dark);
+  --hublot-body: var(--hublot-body-dark);
+  --hublot-line: var(--hublot-line-dark);
+  --new-hublot-field: var(--new-hublot-field-dark);
+  --new-hublot-line: var(--new-hublot-line-dark);
+  --new-hublot-votes: var(--new-hublot-votes-dark);
 }
 
-[color-scheme='light'] {
-	color-scheme: light;
+[color-scheme="light"] {
+  color-scheme: light;
 
-	--title: var(--title-light);
-	--brand: var(--brand-light);
-	--text-1: var(--text-1-light);
-	--text-2: var(--text-2-light);
-	--main-text: var(--main-text-light);
-	--surface-1: var(--surface-1-light);
-	--surface-2: var(--surface-2-light);
-	--surface-3: var(--surface-3-light);
-	--surface-4: var(--surface-4-light);
-	--background: var(--background-light);
-	--border: var(--border-light);
-	--sidebar-background: var(--sidebar-background-light);
-	--header-background: var(--header-background-light);
-	--searchbar-background-color: var(--searchbar-background-color-light);
-	--hover-sidebar: var(--hover-sidebar-light);
-	--new-hublot-field: var(--new-hublot-field-light);
-	--new-hublot-line: var(--new-hublot-line-light);
-	--new-hublot-votes: var(--new-hublot-votes-light);
-	--hover-sidebar: var(--hover-sidebar-light);
-	--hublot-body: var(--hublot-body-light);
-	--hublot-line: var(--hublot-line-light); 
+  --title: var(--title-light);
+  --brand: var(--brand-light);
+  --text-1: var(--text-1-light);
+  --text-2: var(--text-2-light);
+  --main-text: var(--main-text-light);
+  --surface-1: var(--surface-1-light);
+  --surface-2: var(--surface-2-light);
+  --surface-3: var(--surface-3-light);
+  --surface-4: var(--surface-4-light);
+  --background: var(--background-light);
+  --border: var(--border-light);
+  --sidebar-background: var(--sidebar-background-light);
+  --header-background: var(--header-background-light);
+  --searchbar-background-color: var(--searchbar-background-color-light);
+  --hover-sidebar: var(--hover-sidebar-light);
+  --new-hublot-field: var(--new-hublot-field-light);
+  --new-hublot-line: var(--new-hublot-line-light);
+  --new-hublot-votes: var(--new-hublot-votes-light);
+  --hover-sidebar: var(--hover-sidebar-light);
+  --hublot-body: var(--hublot-body-light);
+  --hublot-line: var(--hublot-line-light);
 }
 ```
 
@@ -277,83 +272,140 @@ Nous avons également utiliser certains avantages de sveltekit pour accéder à 
 
 ```html
 <script lang="ts">
-	import Header from './header.svelte';
+  import Header from "./header.svelte";
 
-	import 'iconify-icon';
-	import 'open-props/buttons';
-	import 'open-props/normalize';
-	import 'open-props/style';
+  import "iconify-icon";
+  import "open-props/buttons";
+  import "open-props/normalize";
+  import "open-props/style";
 
-	import ModalCreateAccount from '$lib/modal_create_account.svelte';
-	import ModalCreateAccountNext from '$lib/modal_create_account_next.svelte';
-	import ModalCreateCommunity from '$lib/modal_create_community.svelte';
-	import ModalLogin from '$lib/modal_login.svelte';
-	import '../app.css';
-	import Sidebar from '../lib/sidebar.svelte';
+  import ModalCreateAccount from "$lib/modal_create_account.svelte";
+  import ModalCreateAccountNext from "$lib/modal_create_account_next.svelte";
+  import ModalCreateCommunity from "$lib/modal_create_community.svelte";
+  import ModalLogin from "$lib/modal_login.svelte";
+  import "../app.css";
+  import Sidebar from "../lib/sidebar.svelte";
 
-	let communities: any;
-	/** @type {import('./$types').PageData} */
-	export let data;
-	if (data != null) {
-		communities = data.communities;
-	}
+  let communities: any;
+  /** @type {import('./$types').PageData} */
+  export let data;
+  if (data != null) {
+    communities = data.communities;
+  }
 </script>
 ```
 
-#### Utilisation du client
+### Utilisation du client web
+
 Pour l'application web, nous avons étoffé l'interface commencée dans le livrable 2.
 
 Lors du lancement de l'application, nous arrivons sur une page d'accueil qui contient les éléments suivants :
 
- - un header : logo, nom du site, barre de recherche (non fonctionnelle), bouton *Log in* pour se connecter, icones soleil/lune pour régler le thème du site a dark ou light (fonctionnel)
- - une sidebar à gauche : lien vers l'accueil (Home), liens vers différentes commuunautés, bouton *Sign in* pour se créer un compte
- - un thread central contenant les posts présents dans la base de données
+- un header : logo, nom du site, barre de recherche (non fonctionnelle), bouton _Log in_ pour se connecter, icones soleil/lune pour régler le thème du site a dark ou light (fonctionnel)
+- une sidebar à gauche : lien vers l'accueil (Home), liens vers différentes commuunautés, bouton _Sign in_ pour se créer un compte
+- un thread central contenant les posts présents dans la base de données
 
 L'utilisateur a la possibilité de naviguer sur le site sans se connecter et accéder à toutes les communautés et tous les posts. Néanmoins, s'il souhaite créer un post ou un communauté, il est nécessaire de se créer un compte.
 
-Le bouton *Sign in* dans la sidebar ouvre une petite fenêtre avec un formulaire pour recueillir les informations du nouvel utilisateur (nom, prénom, date de naissance, pseudo, mot de passe, etc). Une fois le compte créé, l'utilisateur retrouve la page d'accueil légrement modifiée :
+Le bouton _Sign in_ dans la sidebar ouvre une petite fenêtre avec un formulaire pour recueillir les informations du nouvel utilisateur (nom, prénom, date de naissance, pseudo, mot de passe, etc). Une fois le compte créé, l'utilisateur retrouve la page d'accueil légrement modifiée :
 
-- le pseudo est affiché à droite dans le header 
-- le bouton *Sign in* n'apparaît plus
-- le bouton *Log in* est remplacé par un bouton *Log out* pour se déconnecter
+- le pseudo est affiché à droite dans le header
+- le bouton _Sign in_ n'apparaît plus
+- le bouton _Log in_ est remplacé par un bouton _Log out_ pour se déconnecter
 - un encart apparaît à droite du thread de posts avec un petit mot de bienvenue et 2 boutons pour créer un post et créer une communauté.
 
-Le bouton *Create a post* (fonctionnel) renvoie a une nouvelle page ou l'utilisateur peut écrire son post (titre, contenu, image, etc). Il y a un menu qui permet de choisir la communauté dans laquelle publier (non fonctionnel). Il y a également un bouton *Save draft* pour sauvegarder le post en brouillon (non fonctionnel) et un bouton pour publier le post (fonctionnel). Après la publication, l'utilisateur est renvoyé automatiquement à la page d'accueil ou il retrouvera le post nouvellement créé à la suite des autres posts.
+Le bouton _Create a post_ (fonctionnel) renvoie a une nouvelle page ou l'utilisateur peut écrire son post (titre, contenu, image, etc). Il y a un menu qui permet de choisir la communauté dans laquelle publier (non fonctionnel). Il y a également un bouton _Save draft_ pour sauvegarder le post en brouillon (non fonctionnel) et un bouton pour publier le post (fonctionnel). Après la publication, l'utilisateur est renvoyé automatiquement à la page d'accueil ou il retrouvera le post nouvellement créé à la suite des autres posts.
 
-Le bouton *Create a community* (fonctionnel) ouvre une petite fenêtre avec un formulaire pour recueillir les informations de la nouvelle communauté (nom, description). Une fois créée, l'utilisateur est envoyé sur la page de la communauté créée.
+Le bouton _Create a community_ (fonctionnel) ouvre une petite fenêtre avec un formulaire pour recueillir les informations de la nouvelle communauté (nom, description). Une fois créée, l'utilisateur est envoyé sur la page de la communauté créée.
 
-Le bouton *Log in* (fonctionnel) permet à l'utilisateur de se connecter si son compte est existant dans la base de données. Si le pseudo ou le mot de passe ne correspond pas, un message d'erreur est affiché. Une fois connecté, l'utilisateur retrouve la même page d'accueil modifiée qu'après une création de nouveau compte.
+Le bouton _Log in_ (fonctionnel) permet à l'utilisateur de se connecter si son compte est existant dans la base de données. Si le pseudo ou le mot de passe ne correspond pas, un message d'erreur est affiché. Une fois connecté, l'utilisateur retrouve la même page d'accueil modifiée qu'après une création de nouveau compte.
 
-Le bouton *Log out* (fonctionnel) permet à l'utilisateur de se déconnecter.
+Le bouton _Log out_ (fonctionnel) permet à l'utilisateur de se déconnecter.
 
-Dans le thead central de la page, chaque post affiche un titre, contenu, image, nom du créateur du post (non fonctionnel), communauté d'appartenance (non fonctionnel) et date de publication.
-Il est possible de supprimer un post en cliquant sur le bouton *Delete* (fonctionnel) au bas du post. Il est également possible de cliquer les flèches haut pour 'upvoter' le post et bas pour le 'downvoter' (même principe que sur Reddit).
+Dans le thread central de la page, chaque post affiche un titre, contenu, image, nom du créateur du post (non fonctionnel), communauté d'appartenance (non fonctionnel) et date de publication.
+Il est possible de supprimer un post en cliquant sur le bouton _Delete_ (fonctionnel) au bas du post. Il est également possible de cliquer les flèches haut pour 'upvoter' le post et bas pour le 'downvoter' (même principe que sur Reddit).
 
-### Client Mobile
-Pour l'application mobile, nous avons ajouté les pages suivantes: la page *Home* et la page création de post. La page Home affiche tous les posts de la base de données. Tous les posts contiennent les éléments suivants: icon(account), nom de l'utilisateur ayant créé la publication, la date de création, un icon (3 points) permettant de supprimer un post, le titre, le contenu(s'il y a lieu), l'image(s'il y a lieu) ainsi que les boutons(icon) *upvote* et *downvote* tous les deux fonctionnels. Les autres boutons sont présents mais non fonctionnels: *comment* et *share*. 
+### Aide visuelle pour le web
 
-Ensuite, la page *Create post* est divisé en deux. Une première page contenant des champs *input* permettant d'entrer le titre, le contenu et le lien de l'image désiré et une deuxième page pour choisir la communauté où publier. 
+#### Page d'accueil light mode
+
+![front page light mode](./images/home_light.png)
+
+Le mode -light ou dark- peut être modifié à l'aide des icônes de soleil et de lune en haut à droite de la page.
+
+#### Page d'accueil dark mode
+
+![front page dark mode](./images/home_dark.png)
+
+#### Création de compte (1)
+
+![account creation](./images/create_account_1.png)
+
+#### Création de compte (2)
+
+![account creation](./images/create_account_2.png)
+
+#### Connexion
+
+![log in](./images/log_in.png)
+
+#### Page d'accueil connectée
+
+![logged in frontpage](./images/home_logged_in.png)
+
+#### Création de post
+
+![create post](./images/create_post.png)
+
+#### Création de communauté
+
+![create community](./images/create_community.png)
+
+#### Page communauté
+
+![community page](./images/page_community.png)
+
+## Client Mobile
+
+### Utilisation du client mobile
+
+Pour l'application mobile, nous avons ajouté les pages suivantes: la page _Home_ et la page création de post. La page Home affiche tous les posts de la base de données. Tous les posts contiennent les éléments suivants: icon(account), nom de l'utilisateur ayant créé la publication, la date de création, un icon (3 points) permettant de supprimer un post, le titre, le contenu(s'il y a lieu), l'image(s'il y a lieu) ainsi que les boutons(icon) _upvote_ et _downvote_ tous les deux fonctionnels. Les autres boutons sont présents mais non fonctionnels: _comment_ et _share_.
+
+Ensuite, la page _Create post_ est divisé en deux. Une première page contenant des champs _input_ permettant d'entrer le titre, le contenu et le lien de l'image désiré et une deuxième page pour choisir la communauté où publier.
 
 Important: la création de publication peut se faire seulement si l'utilisateur est connecté! Une autre fonctionnalité que nous avons ajouté. Pour le moment, il faut se connecter à chaque création de publication, car l'application ne garde pas en mémoire l'utilisateur connecté après qu'une publication soit créée (problème à régler). Par contre, la publication se créée efficament selon l'utilisateur qui vient de se connecter.
 
-Finalement, l'application contient une barre de navigation au bas de la page. Le premier icon renvoie à la page *Home* (fonctionnelle), le deuxième à *Discovery* (en construction), le troisième à la page *Create post* (fonctionnelle), le quatrième à la page *Chat* (en construction) et le dernier à la page *Inbox* (en construction). Le haut de la page contient divers éléments aussi (afin d'imiter l'application Reddit): un icon menu(non fonctionnel), un *dropdown menu* (non fonctionnel), un icon recherche (non fonctionnel) et un icon *account* lui redirigeant vers la page de connexion. À noter que la page de connection permet d'accéder à la page de création de compte. 
+Finalement, l'application contient une barre de navigation au bas de la page. Le premier icon renvoie à la page _Home_ (fonctionnelle), le deuxième à _Discovery_ (en construction), le troisième à la page _Create post_ (fonctionnelle), le quatrième à la page _Chat_ (en construction) et le dernier à la page _Inbox_ (en construction). Le haut de la page contient divers éléments aussi (afin d'imiter l'application Reddit): un icon menu(non fonctionnel), un _dropdown menu_ (non fonctionnel), un icon recherche (non fonctionnel) et un icon _account_ lui redirigeant vers la page de connexion. À noter que la page de connection permet d'accéder à la page de création de compte.
 
-#### Sceenshots
-##### Page Connexion
-En premier l'utilisateur se connecte
+### Aide visuelle pour le mobile
+
+En premier l'utilisateur se connecte.
+
+#### Page Connexion
+
 ![Page Connexion](./images/loginpage.png)
-##### Page Create post
-Après l'utilisateur insère le titre, le contenu et le lien de l'image du post à créer
+
+Après l'utilisateur insère le titre, le contenu et le lien de l'image du post à créer.
+
+#### Page Create post
+
 ![Page CreatePost - 1](./images/createpostpage1.png)
+
 Il choisit la communauté désirée
+
 ![Page CreatePost - 2](./images/createpostpage2.png)
+
 Il publie le tout!
+
 ![Page CreatePost - 3](./images/createpostpage3.png)
-##### Page Home
+
+#### Page Home
+
 ![Page Home](./images/home.png)
 
-### Microservices
-Nous avons développer les trois microservices: ms_community, ms_account, ms_post avec l'aide de java springboot et de maven. Nous avons pris avantage du pouvoirs des annotations Lombok et de plusieurs dépendences web et base de données qui s'intégraient dans un projet java backend comme le notre. Pour reproduire nos microservices il vous faudra lancer un projet avec springboot initializer <https://start.spring.io/> en sélectionnant les options suivantes : Maven, Java, Spring boot 3.1.0 Java 17 et Packaging .jar. Ensuite, pour éviter tout type d'erreur, je vous recommande de prendre ce document pom.xml et de remplacer le contenu généré par initializer par celui-ci:
+## Microservices
+
+Nous avons développé les trois microservices: ms_community, ms_account, ms_post avec l'aide de java springboot et de maven. Nous avons pris avantage du pouvoirs des annotations Lombok et de plusieurs dépendences web et base de données qui s'intégraient dans un projet java backend comme le notre. Pour reproduire nos microservices il vous faudra lancer un projet avec springboot initializer <https://start.spring.io/> en sélectionnant les options suivantes : Maven, Java, Spring boot 3.1.0 Java 17 et Packaging .jar. Ensuite, pour éviter tout type d'erreur, je vous recommande de prendre ce document pom.xml et de remplacer le contenu généré par initializer par celui-ci:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -460,31 +512,34 @@ Nous avons développer les trois microservices: ms_community, ms_account, ms_pos
 
 </project>
 ```
+
 Assurez vous que le group id <groupId>com.example</groupId> représente les données que vous avez entrées lors de la création du projet.
 
 Les prochaines étapes sont les mêmes pour chaque microservices, avec seul changement le contenu du modèle et du controlleur pour représenter les objets spécifiques à votre projet.
 
 Dans le dossier contenant votre fichier application, créer un dossier controller, model, repository. Dans chacun, créer un fichier nommé XController, X, XRepository respectivement ou X est l'objet représenter par votre microservice, dans notre cas CommunityController par exemple. Votre arbre de projet devrait ressembler à ça pour le dossier src:
 
-src
---main
-----java
-------com
---------exemple
-----------ms_community(nom de votre projet)
-------------controller
---------------CommunityController.java
-------------model
---------------Community.java
-------------repository
---------------CommunityRepository.java
+src  
+--main  
+----java  
+------com  
+--------exemple  
+----------ms_community(nom de votre projet)  
+------------controller  
+--------------CommunityController.java  
+------------model  
+--------------Community.java  
+------------repository  
+--------------CommunityRepository.java  
 ------------MsCommunityApplication.java
 
 Nous allons maintenant donner un exemple du code de chacun de ces 4 fichiers et expliquer les annotations et utilisations des technologies de développement java dans le cadre de notre projet pour faciliter votre compréhension et votre capacité à reproduire cette partie du projet. L'explication sera fait dans les commentaires du code et annoncée par une ligne comme celle-ci:
-// *******************************
+// **\*\***\*\***\*\***\*\*\***\*\***\*\***\*\***
 
-#### Code
-##### Controller
+### Code
+
+#### Controller
+
 ```java
 package com.example.ms_community.controller;
 
@@ -523,7 +578,7 @@ public class CommunityController {
     // Autowired permet de trouver automatiquement le repository dans le projet
     @Autowired
     private CommunityRepository communityRepository;
-    
+
     // *******************************
     // Les annotations Operation et ApiResponses viennent de la dépendance swagger ajoutée à notre projet dans le pom.xml mentionné plus haut. Ces annotations seront interprétées par swagger pour offrir de l'information sur l'api. Cette information peut être visualisé au localhost:(port défini dans application.properties pour votre projet java, ici 8081)/swagger-ui/index.html
     @Operation(summary = "Adds a community do the database")
@@ -634,7 +689,8 @@ public class CommunityController {
 }
 ```
 
-##### Model
+#### Model
+
 ```java
 package com.example.ms_community.model;
 
@@ -659,7 +715,7 @@ import lombok.Setter;
 @Setter
 public class Community {
     // ******************************
-    // Les annotations Id, GeneratedValue et Column permettent comme Table de communiqué des informations à la base de données sur le rôles des paramètres de cette classe et aussi de comprendre automatiquement leur types et leurs assignations. 
+    // Les annotations Id, GeneratedValue et Column permettent comme Table de communiqué des informations à la base de données sur le rôles des paramètres de cette classe et aussi de comprendre automatiquement leur types et leurs assignations.
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -708,8 +764,10 @@ public class Community {
 }
 ```
 
-##### Repository
+#### Repository
+
 Le repository est un outil qui permet à l'ORM offert par java de connecter nos entités à la base de donnée en utilisant une approche code first. En créant une interface qui extend CrudRepository nous permettons à notre application de faire les opérations crud sur nos entités et de voir les changements automatiquement représentés dans la base de données.
+
 ```java
 package com.example.ms_community.repository;
 
@@ -719,8 +777,10 @@ import com.example.ms_community.model.Community;;
 public interface CommunityRepository extends CrudRepository<Community, Long>{}
 ```
 
-##### Application
+#### Application
+
 Nous incluons le code du fichier d'application pour vous permettre de voir si le votre est semblable et aider dans le debuggage si jamais vous voyez des problèmes.
+
 ```java
 package com.example.ms_community;
 
@@ -737,7 +797,8 @@ public class MsCommunityApplication {
 }
 ```
 
-##### application.properties
+#### application.properties
+
 Dans ce fichier, il est important de comprendre plusieurs choses.
 
 spring.application.name permet de reconnaitre l'application lors de l'exécution.
@@ -749,6 +810,7 @@ Les propriétés url, username et password sont les valeur de votre base de donn
 Le bloc de propriétés jpa peut être copié, il permet à l'application de communiquer correctement avec la base de données.
 
 Les propriétés de consul sont reliés à la configuration de consul dans le docker compose. Ici il faut mettre le nom du container donné à consul dans .host, le port dans .port et mettre true pour la dernière propriété pour permettre à ce micro-service d'être découvert par consul lors du déploiement sur docker.
+
 ```properties
 spring.application.name=ms_community
 
@@ -767,11 +829,11 @@ spring.cloud.consul.port=8500
 spring.cloud.consul.discovery.prefer-ip-address=true
 ```
 
-##### DockerFile
+#### DockerFile
+
 La dernière étape pour pouvoir exporter votre micro-service sous le format docker est de faire un dockerfile. Voici le code.
 
 On construit l'image à partir (FROM) une image qui utilise déjà java 17 pour être compatible avec notre projet, on crée un volume tmp qui est nécessaire pour l'exécution de l'application jar et qui nous permettra de débugger lors de l'exécution du conteneur si besoin. On COPY le .jar de notre application à la racine de l'image et on spécifie que le point d'entrée lors de l'exécution de cette image est le .jar.
-
 
 ```docker
 FROM eclipse-temurin:17-jdk-alpine
@@ -780,7 +842,7 @@ COPY target/*.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
 ```
 
-#### Exporter le tout vers votre repo dockerhub pour utilisation ultérieure
+### Exporter le tout vers votre repo dockerhub pour utilisation ultérieure
 
 Placez vous à la racine de votre microservice et faites les commandes suivantes pour générer un nouveau .jar avec toutes vos modifications, construire l'image docker et la push vers votre registry en ligne.
 
@@ -792,7 +854,8 @@ docker build -t registryname(ici darkseacollective)/app_imagenametage(ici ms_com
 docker push registryname(ici darkseacollective)/app_imagenametage(ici ms_community:version1.1)
 ```
 
-#### Docker compose
+### Docker compose
+
 Pour compléter le backend, refaites les étapes de la dernière section pour chacun de vos microservices et revenez ici pour construire le fichier docker-compose.yaml qui vous permettra de lancer le backend en une commande. Nous allons encore utiliser les commentaires et la rangée d'étoile pour montrer ou sont les commentaires utiles à cette documentation.
 
 ```yaml
@@ -910,48 +973,58 @@ volumes:
   data:
 ```
 
-#### Aides visuels pour le backend
-##### État de docker desktop après la commande docker compose up
+### Aide visuelle pour le backend
+
+#### État de docker desktop après la commande docker compose up
+
 Vous devriez retrouver l'état suivant dans votre docker desktop.
 
 ![docker desktop](./images/docker-desktop-backend-running.png)
 
-##### Consul après initialisation de tous les services
+#### Consul après initialisation de tous les services
+
 Vous devriez retrouver l'état suivant dans votre interface consul. Si les services n'affichent pas ou on un x rouge, laisser le temps à consul de finir la découverte.
 
 ![consul](./images/consul-running.png)
 
-##### Adminer - votre page d'accueil pour l'utilisation de cet outil de gestion de base de donnée
+#### Adminer - votre page d'accueil pour l'utilisation de cet outil de gestion de base de donnée
+
 Vous devriez retrouver l'état suivant dans votre interface adminer. Vous devez utiliser l'utilisateur darksea et le mot de passe root.
 
 ![consul](./images/adminer-running.png)
 
-##### Adminer - votre page d'accueil pour l'utilisation de cet outil de gestion de base de donnée
+#### Adminer - votre page d'accueil pour l'utilisation de cet outil de gestion de base de donnée
+
 Vous devriez retrouver l'état suivant dans votre interface adminer si vous naviguer vers la base donnée hublot.hull, sélectionnez une des table et ouvrez la section des données.
 
 ![consul](./images/adminer-account-table-example-running.png)
 
-##### Microservice - community, swagger
+#### Microservice - community, swagger
+
 Vous devriez retrouver l'état suivant dans votre interface swagger si vous suiver le lien offert dans docker desktop lorsque vos services roulent et que vous ajoutez /swagger-ui.html.
 
 ![consul](./images/ms_community-swagger-runnning.png)
 
-##### Microservice - post, swagger
+#### Microservice - post, swagger
+
 Vous devriez retrouver l'état suivant dans votre interface swagger si vous suiver le lien offert dans docker desktop lorsque vos services roulent et que vous ajoutez /swagger-ui.html.
 
 ![consul](./images/ms_post-swagger-runnning.png)
 
-##### Microservice - account, swagger
+#### Microservice - account, swagger
+
 Vous devriez retrouver l'état suivant dans votre interface swagger si vous suiver le lien offert dans docker desktop lorsque vos services roulent et que vous ajoutez /swagger-ui.html.
 
 ![consul](./images/ms_account-swagger-runnning.png)
 
-##### Notes sur les instructions
+#### Notes sur les instructions
+
 Toutes les étapes seront expliquées plus en profondeur dans les vidéos guide d'utilisateur.ice et fuide de développement. Voir la prochaine section.
 
-## Guides
-### Guide d'utilisateur.ice
+# Guides
 
-### Guide de développement
+## Guide d'utilisateur.ice
 
-## Améliorations futures et intropections sur le projet
+## Guide de développement
+
+# Améliorations futures et intropections sur le projet
