@@ -6,6 +6,7 @@ Pour le troisième livrable, nous allons livrer les parties suivantes de notre a
      2. Client mobile utilisant les fonctionnalités de chaque microservices
      3. Une version docker des microservices pour un déploiement simple
   2. Un guide utilisateur.ice et un guide de développement sous format vidéo
+  3. Une section d'améliorations futures et d'instrospection sur le projet
 
 - [Livrable 3](#livrable-3)
   - [Documentation complète pour le projet](#documentation-complète-pour-le-projet)
