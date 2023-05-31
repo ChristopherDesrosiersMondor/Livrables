@@ -880,8 +880,48 @@ volumes:
   data:
 ```
 
+#### Aides visuels pour le backend
+##### État de docker desktop après la commande docker compose up
+Vous devriez retrouver l'état suivant dans votre docker desktop.
+
+![docker desktop](./images/docker-desktop-backend-running.png)
+
+##### Consul après initialisation de tous les services
+Vous devriez retrouver l'état suivant dans votre interface consul. Si les services n'affichent pas ou on un x rouge, laisser le temps à consul de finir la découverte.
+
+![consul](./images/consul-running.png)
+
+##### Adminer - votre page d'accueil pour l'utilisation de cet outil de gestion de base de donnée
+Vous devriez retrouver l'état suivant dans votre interface adminer. Vous devez utiliser l'utilisateur darksea et le mot de passe root.
+
+![consul](./images/adminer-running.png)
+
+##### Adminer - votre page d'accueil pour l'utilisation de cet outil de gestion de base de donnée
+Vous devriez retrouver l'état suivant dans votre interface adminer si vous naviguer vers la base donnée hublot.hull, sélectionnez une des table et ouvrez la section des données.
+
+![consul](./images/adminer-account-table-example-running.png)
+
+##### Microservice - community, swagger
+Vous devriez retrouver l'état suivant dans votre interface swagger si vous suiver le lien offert dans docker desktop lorsque vos services roulent et que vous ajoutez /swagger-ui.html.
+
+![consul](./images/ms_community-swagger-runnning.png)
+
+##### Microservice - post, swagger
+Vous devriez retrouver l'état suivant dans votre interface swagger si vous suiver le lien offert dans docker desktop lorsque vos services roulent et que vous ajoutez /swagger-ui.html.
+
+![consul](./images/ms_post-swagger-runnning.png)
+
+##### Microservice - account, swagger
+Vous devriez retrouver l'état suivant dans votre interface swagger si vous suiver le lien offert dans docker desktop lorsque vos services roulent et que vous ajoutez /swagger-ui.html.
+
+![consul](./images/ms_account-swagger-runnning.png)
+
+##### Notes sur les instructions
+Toutes les étapes seront expliquées plus en profondeur dans les vidéos guide d'utilisateur.ice et fuide de développement. Voir la prochaine section.
 
 ## Guides
 ### Guide d'utilisateur.ice
 
 ### Guide de développement
+
+## Améliorations futures et intropections sur le projet
