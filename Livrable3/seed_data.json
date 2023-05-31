@@ -1,0 +1,127 @@
+{
+    "users_seed" : {
+        "user1" : 
+        
+        {
+            "userLastName": "Rehouma",
+            "userFirstName": "Haythem",
+            "userEmail": "rhouma@gmail.com",
+            "userPseudo": "Rhouma",
+            "userPassword": "1234",
+            "userBirthday": "2023-05-31"
+        }
+        
+        ,
+
+        "user2" : 
+        
+        {
+            "userLastName": "Ouellette",
+            "userFirstName": "Valerie",
+            "userEmail": "valou@gmail.com",
+            "userPseudo": "Valouu",
+            "userPassword": "1234321",
+            "userBirthday": "2023-05-31"
+        }
+
+        ,
+
+        "user3" : 
+        
+        {
+            "userLastName": "Massault",
+            "userFirstName": "Lou",
+            "userEmail": "mas_lou@gmail.com",
+            "userPseudo": "LouMas",
+            "userPassword": "4321",
+            "userBirthday": "2023-05-31"
+        }
+
+        ,
+
+        "user4" : 
+        
+        {
+            "userLastName": "Desrosiers Mondor",
+            "userFirstName": "Christopher",
+            "userEmail": "desrosch@gmail.com",
+            "userPseudo": "chris_codes",
+            "userPassword": "58964",
+            "userBirthday": "2023-05-31"
+        }
+    },
+    "community_seed" : {
+        "community1" : 
+        
+        {
+            "communityName": "CyberpunkStuff",
+            "communityDescription": "A cool community all about the cyberpunk esthetic!",
+            "communityLogo": "string",
+            "communityHeaderImage": "string",
+            "communityCreatedOnDate": "2023-05-31T17:37:32.369Z",
+            "communityAmmountOfMembers": 5,
+            "communityAmmountOfPosts": 0,
+            "communityCreatorId": 1
+        }
+        
+        ,
+
+        "community2" : 
+
+        {
+            "communityName": "ComputerNerds",
+            "communityDescription": "A cool community all about computers!",
+            "communityLogo": "string",
+            "communityHeaderImage": "string",
+            "communityCreatedOnDate": "2023-05-31T17:37:32.369Z",
+            "communityAmmountOfMembers": 3,
+            "communityAmmountOfPosts": 0,
+            "communityCreatorId": 2
+        }
+    },
+    "post_seed" : {
+        "post1" : 
+        
+        {
+            "postTitle": "Un post test",
+            "postContent": "Le texte du post 1.",
+            "postSource": "https://img.freepik.com/free-photo/blossom-floral-bouquet-decoration-colorful-beautiful-flowers-background-garden-flowers-plant-pattern-wallpapers-greeting-cards-postcards-design-wedding-invites_90220-1103.jpg",
+            "postDate": "2023-05-28",
+            "postUpvote": 0,
+            "postDownvote": 0,
+            "postIdUser": 1,
+            "postIdCom": 1
+        }
+        
+        ,
+
+        "post2" : 
+        
+        {
+            "postTitle": "Un post test de plus",
+            "postContent": "Le texte du post 2.",
+            "postSource": "https://c4.wallpaperflare.com/wallpaper/108/140/869/digital-digital-art-artwork-fantasy-art-drawing-hd-wallpaper-thumb.jpg",
+            "postDate": "2023-05-29",
+            "postUpvote": 0,
+            "postDownvote": 0,
+            "postIdUser": 2,
+            "postIdCom": 2
+        }
+        
+        ,
+
+        "post3" : 
+        
+        {
+            "postTitle": "Un post test de plus, encore",
+            "postContent": "Le texte du post 3.",
+            "postSource": "https://wallpaperaccess.com/thumb/9070071.png",
+            "postDate": "2023-05-29",
+            "postUpvote": 0,
+            "postDownvote": 0,
+            "postIdUser": 4,
+            "postIdCom": 1
+        }
+
+    }
+}
