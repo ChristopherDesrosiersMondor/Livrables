@@ -7,7 +7,261 @@ Pour le troisième livrable, nous allons livrer les parties suivantes de notre a
     4. Une documentation complète pour le projet
     5. Un guide utilisateur.ice et un guide de développement sous format vidéo
 
-## Client Web
+### Client Web
+#### Concept utiles en svelte
+Nous le verrons plus dans le guide développeur, mais svelte offre plusieurs avantages sur d'autres framework, particulièrement l'option de render de l'information du côté serveur et du côté client ou de un ou l'autre. À l'aide des fichier +page.ts et +page.server.ts nous pouvons choisir ce qui est exécuter par le serveur ou par le client avant de télécharger et d'afficher les informations de la page. Voici un exemple où on demande au serveur de trouver toutes les communautés.
+
+```typescript
+import { communityUrl } from '$lib/config';
+
+
+/** @type {import('./$types').PageServerLoad} */
+export async function load({ params }) {
+    let community = null;
+    const url = communityUrl + 'communities/get/' + params.communityName;
+    const response = await fetch(url);
+    community = await response.json();        
+    console.log(community);
+    
+    return {
+        community
+    };
+
+}
+```
+
+Le routing client en svelte est impressionant, nous permettant de structurer le projet simplement sous forme d'arborescence de dossier et d'ensuite utiliser un simple tag html a avec un lien vers un autre dossier pour créer le comportement du routing client. Voici l'exemple de la structure des routes et un appel à ces routes dans le code.
+
+![routing en svelte](./images/routing-svelte.png)
+
+```html
+{#if propValue != null}
+  {#each propValue as community}
+    <a
+      role="menuitem"
+      class="sidebar-menu-link"
+      tabindex="-1"
+      aria-label="./"
+      href="/h/{community.communityName}"
+    >
+      <i class="sidebar-icons icon"><Trophy /></i>
+      <span class="sidebar-items-text">h/{community.communityName}</span>
+    </a>
+  {/each}
+{/if}
+```
+
+Comme on le voit ici, svelte est un puissant outil de développement front-end. En effet, on utilise à la fois ses avantages de routing en appelant seulement le lien href de la même manière que l'arborescence vu plus haut, mais en plus on peut utiliser une variable définie dans le script (community) avec l'usage des braquettes {} pour compléter la route. En effet, en svelte on peut créer des routes avec des paramètres très facilement en donnant une slug (nom utilisé pour décrire le paramètre url d'une route) à notre dossier en utilisant les braquettes []! Ici la slug est nommée communityName et est accessible par les paramètres de l'url comme dans le code ci-dessus ou ont trouvait les communautés (voir l'utilisation de params).
+
+#### Techniques d'architecture
+Nous avons utiliser le concept de classes en css pour créer des variables de couleur utilisable partout sur notre client web. L'avantage de cette approche est de permettre aux développeur d'utiliser les mêmes noms de variables sur plusieurs composants et de changer le thème du site en entier rapidement. Dans le fichier app.css vous trouverez des exemples de ces variables et leur usage dans notre cas pour offrir un thème clair et un thème sombre au simple clic d'un bouton. Voici le code.
+
+```css
+@import '@fontsource/manrope';
+@import '@fontsource/jetbrains-mono';
+
+html {
+	/* font */
+	--font-sans: Verdana, arial, 'Manrope', sans-serif;
+	--font-mono: Verdana, arial, 'JetBrains Mono', monospace;
+
+	/* dark */
+	--title-dark: #d7dadc;
+	--brand-dark: var(--orange-3);
+	--text-1-dark: var(--gray-3);
+	--text-2-dark: #757575;
+	--main-text-dark: white;
+	--surface-1-dark: var(--gray-12);
+	--surface-2-dark: var(--gray-11);
+	--surface-3-dark: var(--gray-10);
+	--surface-4-dark: var(--gray-9);
+	--background-dark: black;
+	--header-background-dark: #1a1a1b;
+	--border-dark: var(--gray-9);
+	--sidebar-background-dark: #1a1a1b;
+	--searchbar-background-color-dark: #272729;
+	--reg-border-color-dark: grey;
+	--hover-border-color-dark: white;
+	--hover-sidebar-dark: #232324;
+	--back-to-top-btn-dark: #0079d3;
+	/* --back-to-top-btn-hover-dark: #e4e6e7; */
+	--hublot-body-dark: #1a1a1b;
+	--hublot-line-dark: #343536;
+	--new-hublot-field-dark: #272729;
+	--new-hublot-line-dark: #343536;
+	--new-hublot-votes-dark: rgba(18, 18, 19, 0.8);
+	
+
+
+
+	/* light */
+	--title-light: black;
+	--brand-light: var(--orange-10);
+	--text-1-light: var(--gray-8);
+	--text-2-light: #757575;
+	--main-text-light: black;
+	--surface-1-light: #dae0e6;
+	--surface-2-light: var(--gray-1);
+	--surface-3-light: var(--gray-2);
+	--surface-4-light: var(--gray-3);
+	--background-light: rgb(219, 224, 230);
+	--header-background-light: white;
+	--border-light: var(--gray-4);
+	--sidebar-background-light: white;
+	--searchbar-background-color-light: #f6f7f8;
+	--reg-border-color-light: grey;
+	--hover-border-color-light: #0079d3;
+	--hover-sidebar-light: #f5f5f5;
+	--back-to-top-btn-light: #0079d3;
+	/* --back-to-top-btn-hover-light: #e4e6e7; */
+	--hublot-body-light: #ffffff;
+	--hublot-line-light: #edeff1;
+	--new-hublot-field-light: #f6f7f8;
+	--new-hublot-line-light: #edeff1;
+	--new-hublot-votes-light: rgba(255,255,255,0.8);
+}
+
+:root {
+	color-scheme: dark;
+
+	--title: var(--title-dark);
+	--brand: var(--brand-dark);
+	--text-1: var(--text-1-dark);
+	--text-2: var(--text-2-dark);
+	--main-text: var(--main-text-dark);
+	--surface-1: var(--surface-1-dark);
+	--surface-2: var(--surface-2-dark);
+	--surface-3: var(--surface-3-dark);
+	--surface-4: var(--surface-4-dark);
+	--background: var(--background-dark);
+	--border: var(--border-dark);
+	--sidebar-background: var(--sidebar-background-dark);
+	--header-background: var(--header-background-dark);
+	--searchbar-background-color: var(--searchbar-background-color-dark);
+	--reg-border-color: var(--reg-border-color-dark);
+	--hover-border-color: var(--hover-border-color-dark);
+	--hover-sidebar: var(--hover-sidebar-dark); 
+	--back-to-top-btn : var(--back-to-top-btn-dark);
+	/* --back-to-top-btn-hover: var(--back-to-top-btn-hover-dark) ; */
+	--hover-sidebar: var(--hover-sidebar-dark);
+	--hublot-body: var(--hublot-body-dark);
+	--hublot-line: var(--hublot-line-dark);
+	--new-hublot-field: var(--new-hublot-field-dark);
+	--new-hublot-line: var(--new-hublot-line-dark);
+	--new-hublot-votes: var(--new-hublot-votes-dark);
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+		color-scheme: light;
+		
+		--title: var(--title-light);
+		--brand: var(--brand-light);
+		--text-1: var(--text-1-light);
+		--text-2: var(--text-2-light);
+		--main-text: var(--main-text-light);
+		--surface-1: var(--surface-1-light);
+		--surface-2: var(--surface-2-light);
+		--surface-3: var(--surface-3-light);
+		--surface-4: var(--surface-4-light);
+		--background: var(--background-light);
+		--border: var(--border-light);
+		--sidebar-background: var(--sidebar-background-light);
+		--header-background: var(--header-background-light);
+		--searchbar-background-color: var(--searchbar-background-color-light);
+		--reg-border-color: var(--reg-border-color-light);
+		--hover-border-color: var(--hover-border-color-light);
+		--hover-sidebar: var(--hover-sidebar-light);
+		--back-to-top-btn : var(--back-to-top-btn-light);
+		/* --back-to-top-btn-hover: var(--back-to-top-btn-hover-light) ; */
+		--hublot-body: var(--hublot-body-light);
+		--hublot-line: var(--hublot-line-light);
+		--new-hublot-field: var(--new-hublot-field-light);
+		--new-hublot-line: var(--new-hublot-line-light);
+		--new-hublot-votes: var(--new-hublot-votes-light);
+	}
+}
+
+[color-scheme='dark'] {
+	color-scheme: dark;
+
+	--title: var(--title-dark);
+	--brand: var(--brand-dark);
+	--text-1: var(--text-1-dark);
+	--text-2: var(--text-2-dark);
+	--main-text: var(--main-text-dark);
+	--surface-1: var(--surface-1-dark);
+	--surface-2: var(--surface-2-dark);
+	--surface-3: var(--surface-3-dark);
+	--surface-4: var(--surface-4-dark);
+	--background: var(--background-dark);
+	--border: var(--border-dark);
+	--sidebar-background: var(--sidebar-background-dark);
+	--header-background: var(--header-background-dark);
+	--searchbar-background-color: var(--searchbar-background-color-dark); 
+	--hover-sidebar: var(--hover-sidebar-dark);
+	--hublot-body: var(--hublot-body-dark);
+	--hublot-line: var(--hublot-line-dark);
+	--new-hublot-field: var(--new-hublot-field-dark);
+	--new-hublot-line: var(--new-hublot-line-dark);
+	--new-hublot-votes: var(--new-hublot-votes-dark);
+}
+
+[color-scheme='light'] {
+	color-scheme: light;
+
+	--title: var(--title-light);
+	--brand: var(--brand-light);
+	--text-1: var(--text-1-light);
+	--text-2: var(--text-2-light);
+	--main-text: var(--main-text-light);
+	--surface-1: var(--surface-1-light);
+	--surface-2: var(--surface-2-light);
+	--surface-3: var(--surface-3-light);
+	--surface-4: var(--surface-4-light);
+	--background: var(--background-light);
+	--border: var(--border-light);
+	--sidebar-background: var(--sidebar-background-light);
+	--header-background: var(--header-background-light);
+	--searchbar-background-color: var(--searchbar-background-color-light);
+	--hover-sidebar: var(--hover-sidebar-light);
+	--new-hublot-field: var(--new-hublot-field-light);
+	--new-hublot-line: var(--new-hublot-line-light);
+	--new-hublot-votes: var(--new-hublot-votes-light);
+	--hover-sidebar: var(--hover-sidebar-light);
+	--hublot-body: var(--hublot-body-light);
+	--hublot-line: var(--hublot-line-light); 
+}
+```
+
+Nous avons également utiliser certains avantages de sveltekit pour accéder à nos composants et nos images. En effet, en svelte c'est très facile d'importer toutes les ressources dans le dossier lib en utilisant le symbole $ et le mot lib. Voici un exemple où on importe plusieurs composants de lib pour construire notre layout.
+
+```html
+<script lang="ts">
+	import Header from './header.svelte';
+
+	import 'iconify-icon';
+	import 'open-props/buttons';
+	import 'open-props/normalize';
+	import 'open-props/style';
+
+	import ModalCreateAccount from '$lib/modal_create_account.svelte';
+	import ModalCreateAccountNext from '$lib/modal_create_account_next.svelte';
+	import ModalCreateCommunity from '$lib/modal_create_community.svelte';
+	import ModalLogin from '$lib/modal_login.svelte';
+	import '../app.css';
+	import Sidebar from '../lib/sidebar.svelte';
+
+	let communities: any;
+	/** @type {import('./$types').PageData} */
+	export let data;
+	if (data != null) {
+		communities = data.communities;
+	}
+</script>
+```
+
+#### Utilisation du client
 Pour l'application web, nous avons étoffé l'interface commencée dans le livrable 2.
 
 Lors du lancement de l'application, nous arrivons sur une page d'accueil qui contient les éléments suivants :
@@ -36,7 +290,7 @@ Le bouton *Log out* (fonctionnel) permet à l'utilisateur de se déconnecter.
 Dans le thead central de la page, chaque post affiche un titre, contenu, image, nom du créateur du post (non fonctionnel), communauté d'appartenance (non fonctionnel) et date de publication.
 Il est possible de supprimer un post en cliquant sur le bouton *Delete* (fonctionnel) au bas du post. Il est également possible de cliquer les flèches haut pour 'upvoter' le post et bas pour le 'downvoter' (même principe que sur Reddit).
 
-## Client Mobile
+### Client Mobile
 Pour l'application mobile, nous avons ajouté les pages suivantes: la page *Home* et la page création de post. La page Home affiche tous les posts de la base de données. Tous les posts contiennent les éléments suivants: icon(account), nom de l'utilisateur ayant créé la publication, la date de création, un icon (3 points) permettant de supprimer un post, le titre, le contenu(s'il y a lieu), l'image(s'il y a lieu) ainsi que les boutons(icon) *upvote* et *downvote* tous les deux fonctionnels. Les autres boutons sont présents mais non fonctionnels: *comment* et *share*. 
 
 Ensuite, la page *Create post* est divisé en deux. Une première page contenant des champs *input* permettant d'entrer le titre, le contenu et le lien de l'image désiré et une deuxième page pour choisir la communauté où publier. 
@@ -626,13 +880,6 @@ volumes:
   data:
 ```
 
-### Client Mobile
-
-### Client Web
-#### Svelte
-
-
-#### SvelteKit
 
 ## Guides
 ### Guide d'utilisateur.ice
