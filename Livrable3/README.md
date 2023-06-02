@@ -53,8 +53,11 @@ Pour le troisième livrable, nous allons livrer les parties suivantes de notre a
       - [Notes sur les instructions](#notes-sur-les-instructions)
 - [Guides](#guides)
   - [Guide d'utilisateur.ice](#guide-dutilisateurice)
+    - [Mobile](#mobile)
   - [Guide de développement](#guide-de-développement)
     - [Étapes d'installation](#étapes-dinstallation)
+      - [Partie Mobile](#partie-mobile)
+      - [Partie Web](#partie-web)
 - [Améliorations futures et intropections sur le projet](#améliorations-futures-et-intropections-sur-le-projet)
 
 # Documentation complète pour le projet
@@ -394,6 +397,8 @@ Ensuite, la page _Create post_ est divisé en deux. Une première page contenant
 Important: la création de publication peut se faire seulement si l'utilisateur est connecté! Une autre fonctionnalité que nous avons ajouté. Pour le moment, il faut se connecter à chaque création de publication, car l'application ne garde pas en mémoire l'utilisateur connecté après qu'une publication soit créée (problème à régler). Par contre, la publication se créée efficament selon l'utilisateur qui vient de se connecter.
 
 Finalement, l'application contient une barre de navigation au bas de la page. Le premier icon renvoie à la page _Home_ (fonctionnelle), le deuxième à _Discovery_ (en construction), le troisième à la page _Create post_ (fonctionnelle), le quatrième à la page _Chat_ (en construction) et le dernier à la page _Inbox_ (en construction). Le haut de la page contient divers éléments aussi (afin d'imiter l'application Reddit): un icon menu(non fonctionnel), un _dropdown menu_ (non fonctionnel), un icon recherche (non fonctionnel) et un icon _account_ lui redirigeant vers la page de connexion. À noter que la page de connection permet d'accéder à la page de création de compte.
+
+** Veuillez noter que les changements ont parfois de la difficulté à se faire en temps réel. Si un changement ne se fait pas dans la page Home (post supprimé, post ajouté), veuillez ouvrir une autre page (discovery par exemple), et revenir à Home.**
 
 ### Aide visuelle pour le mobile
 
@@ -1043,9 +1048,62 @@ Toutes les étapes seront expliquées plus en profondeur dans les vidéos guide 
 
 # Guides
 ## Guide d'utilisateur.ice
+### Mobile
+![Page Connexion](./images/doc-loginpage.png)
+![Create Post - 1](./images/doc-createpostpage1.png)
+![Create Post - 2](./images/doc-createpostpage2.png)
+![Create Post - 3](./images/doc-createpostpage3.png)
+![Home](./images/doc-home.png)
 
+** Veuillez noter qu'il faut parfois changer de page et revenir à la page Home pour que le post apparaîsse. 
 ## Guide de développement
 ### Étapes d'installation
+
+1. Installer Docker Desktop. Se référer aux étapes décrites dans le lien suivant: https://www.docker.com/products/docker-desktop/
+2. Télécharger les deux dossiers zip: S4_FinalProject_Microservices et S4_FINALPROJECT.FRONTEND.
+3. Ouvrir S4_FinalProject_Microservices dans VS Code.
+4. Ouvrir le terminal dans VS Code et taper les commandes suivantes:
+   ```shell
+   cd ./backend
+   docker compose up -d
+   ```
+   Les micro-services devraient maintenant rouler sur Docker Desktop.
+5. Sur Docker Desktop: 
+   - Il est possible d'accéder au registre *Consul* et à *Adminer* (système de gestion de la base de données) en cliquant sur le port correspondant.
+   - Dans *Consul*, nous pouvon voir tous les micro-services et le nombre d'instance de chaque.
+   - Dans *Adminer*, il faut s'enregistrer avec les paramètres suivants:
+      ```
+      système: postgresSQL   
+      serveur: db   
+      utilisateur: darksea  
+      mot de passe: root  
+      base de données: (laisser vide)
+      ```
+   - Cliquer sur Hublot.hull pour accéder aux tables et aux données.
+6. Peupler la base de données avec Swagger. 
+   - MS_community: http://localhost:8081/swagger-ui/index.html
+   - MS_account: http://localhost:8082/swagger-ui/index.html
+   - MS_post: http://localhost:8083/swagger-ui/index.html   
+   Sélectionner la requête POST pour chaque micro-service et ajouter les fichiers json [data](seed_data.json) **un par un**. 
+
+#### Partie Mobile
+7. Installer Flutter en suivant les instructions du lien suivant: https://docs.flutter.dev/get-started/install
+8. Ouvrir S4_FINALPROJECT_FRONTEND dans VS Code et installer les extensions Dart et Flutter. 
+9. Si vous n'avez pas d'émulateur mobile, vous pouvez en créer un en installant Android Studio https://developer.android.com/studio?gclid=CjwKCAjwpuajBhBpEiwA_ZtfhXdJzQMO8SY7LjRs_Mo5nRh19Kz4uD2dRn7vFUNsVbG5fIhd8PL3uhoCBjsQAvD_BwE&gclsrc=aw.ds   
+    Ensuite, aller dans Virtual Device Manager, choisir *Create Device*, choisir un téléphone dans la liste, puis télécharger le système d'exploitation au choix. Cliquer sur *Finish*.
+    L'émulateur sera ajouté automatiquement sur VS Code.
+    Cliquer sur *No device* ou *Windows* ou *Chrome* dans la barre du bas de la fenêtre de VS Code. Ensuite, sélectionner l'émulateur dans la barre du haut.
+    Plus de détail dans le lien suivant: https://developer.android.com/studio/run/managing-avds
+10. Rouler ensuite le projet en accédant à la page main dans ./interface_mobile/interface_mobile/lib  ou simplement en utilisant l'option Run dans la barre de haut de la fenêtre de VS Code. Le code écrit pour l'application se retrouve dans ./interface_mobile/interface_mobile/lib 
+
+#### Partie Web
+11. Dans VS Code, installer l'extension suivante: Svelte for VS Code.
+12. Ouvrir le terminal, retourner à la base du projet et taper les commandes suivantes
+   ```shell
+   cd ./interface_web_svelte
+   npm install
+   npm run dev
+   ```
 
 
 # Améliorations futures et intropections sur le projet
