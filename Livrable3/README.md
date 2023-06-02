@@ -1061,6 +1061,9 @@ Toutes les étapes seront expliquées plus en profondeur dans les vidéos guide 
 
 # Guides
 ## Guide d'utilisateur.ice
+### Lien vers la vidéo
+[Guide d'utilisation](https://youtu.be/ysExSv9O5Zs)
+
 ### Mobile
 ![Page Connexion](./images/doc-loginpage.png)
 ![Create Post - 1](./images/doc-createpostpage1.png)
@@ -1070,6 +1073,9 @@ Toutes les étapes seront expliquées plus en profondeur dans les vidéos guide 
 
 ** Veuillez noter qu'il faut parfois changer de page et revenir à la page Home pour que le post apparaîsse. 
 ## Guide de développement
+### Lien vers la vidéo
+[Guide de développement](https://youtu.be/XfQqHfIuwkI)
+
 ### Étapes d'installation
 
 1. Installer Docker Desktop. Se référer aux étapes décrites dans le lien suivant: https://www.docker.com/products/docker-desktop/
@@ -1148,6 +1154,7 @@ Toutes les étapes seront expliquées plus en profondeur dans les vidéos guide 
 9. Sidebar
    1.  Implémenter une page pour le lien Popular
    2.  Implémenter une fonctionnalité pour la section Topics
+10. Dockerizer le frontend pour lancer le tout plus facilement
 
 ### Ameliorations backend
 1. Ajouter une API gateway
