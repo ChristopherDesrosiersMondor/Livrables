@@ -72,6 +72,7 @@ Pour le troisième livrable, nous allons livrer les parties suivantes de notre a
 
 ## Code Frontend
 [Lien github: Frontend](https://github.com/ChristopherDesrosiersMondor/S4_FINALPROJECT_FRONTEND)
+
 # Documentation complète pour le projet
 
 ## Client Web
