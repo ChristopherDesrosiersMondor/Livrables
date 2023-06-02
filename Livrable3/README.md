@@ -10,6 +10,9 @@ Pour le troisième livrable, nous allons livrer les parties suivantes de notre a
 3. Une section d'améliorations futures et d'instrospection sur le projet
 
 - [Livrable 3](#livrable-3)
+- [Lien vers le code](#lien-vers-le-code)
+  - [Code Backend](#code-backend)
+  - [Code Frontend](#code-frontend)
 - [Documentation complète pour le projet](#documentation-complète-pour-le-projet)
   - [Client Web](#client-web)
     - [Concept utiles en svelte](#concept-utiles-en-svelte)
@@ -63,6 +66,12 @@ Pour le troisième livrable, nous allons livrer les parties suivantes de notre a
       - [Fonctionalités](#fonctionalités)
     - [Ameliorations backend](#ameliorations-backend)
 
+# Lien vers le code
+## Code Backend
+[Lien github: Backend](https://github.com/ChristopherDesrosiersMondor/S4_FinalProject_Microservices)
+
+## Code Frontend
+[Lien github: Frontend](https://github.com/ChristopherDesrosiersMondor/S4_FINALPROJECT_FRONTEND)
 # Documentation complète pour le projet
 
 ## Client Web
@@ -1087,7 +1096,7 @@ Toutes les étapes seront expliquées plus en profondeur dans les vidéos guide 
    - MS_community: http://localhost:8081/swagger-ui/index.html
    - MS_account: http://localhost:8082/swagger-ui/index.html
    - MS_post: http://localhost:8083/swagger-ui/index.html   
-   Sélectionner la requête POST pour chaque micro-service et ajouter les fichiers json [data](seed_data.json) **un par un**. 
+   Sélectionner la requête POST pour chaque micro-service et ajouter les fichiers json [seed_data.json](seed_data.json) **un par un**. 
 
 #### Partie Mobile
 7. Installer Flutter en suivant les instructions du lien suivant: https://docs.flutter.dev/get-started/install
