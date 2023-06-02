@@ -1111,7 +1111,8 @@ Toutes les étapes seront expliquées plus en profondeur dans les vidéos guide 
 
 #### Partie Web
 11. Dans VS Code, installer l'extension suivante: Svelte for VS Code.
-12. Ouvrir le terminal, retourner à la base du projet et taper les commandes suivantes
+12. Installer node.js
+13. Ouvrir le terminal, retourner à la base du projet et taper les commandes suivantes
    ```shell
    cd ./interface_web_svelte
    npm install
